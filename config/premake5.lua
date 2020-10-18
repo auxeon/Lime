@@ -45,7 +45,29 @@ project "Lime"
 			"-F ../"..basepath.."lib",
 			"-Wl -rpath "..p
 		}
+	end
 
+	if os.host() == "windows" then
+		kind ("WindowedApp")
+	
+		includedirs {
+			basepath.."%{prj.name}/lib/SDL2-2.0.12/include"
+		}
+		-- doing it only for 64 bit 
+		libdirs {
+			basepath.."%{prj.name}/lib/SDL2-2.0.12/lib/x64/"
+		}
+
+		links {
+			"SDL2",
+			"SDL2main",
+			"SDL2test",
+			"SDL2.dll"
+		}
+		p = "%{targetdir}"
+		postbuildcommands {
+			"{COPY} ..\\..\\lib\\SDL2-2.0.12\\lib\\x64\\SDL2.dll bin\\"..outputdir.."\\Lime"
+		}
 	end
 
 	filter "configurations:Debug"
@@ -55,4 +77,4 @@ project "Lime"
 	filter "configurations:Release"
 		defines { "NDEBUG" }
 		optimize ("On")
-
+		
