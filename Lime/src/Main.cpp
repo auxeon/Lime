@@ -7,7 +7,7 @@
 //
 
 #include <iostream>
-#include <SDL.h>
+#include "SDL.h"
 #ifdef _WIN64
     #include "Windows.h"
     FILE _iob[] = { 
