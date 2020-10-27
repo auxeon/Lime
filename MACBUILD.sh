@@ -1,2 +1,2 @@
 #!/bin/bash
-tools/premake/premake5 --file=config/premake5.lua xcode4
+tools/premake/premake5 --file=premake5.lua xcode4

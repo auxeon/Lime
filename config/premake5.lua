@@ -1,6 +1,6 @@
 -- premake5.lua
 
-basepath = "../"
+basepath = "./"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 workspace "Lime"
@@ -12,7 +12,6 @@ workspace "Lime"
 
 
 project "Lime"
-	location (basepath.."%{prj.name}/builds/%{wks.system}")
 	language ("C++")
 	cppdialect ("C++17")
 	
@@ -20,11 +19,9 @@ project "Lime"
 	objdir (basepath.."%{prj.name}/builds/%{cfg.system}/bin-int/"..outputdir.."/%{prj.name}")
 
 	files { 
-		basepath.."%{prj.name}/src/**.h",
-		basepath.."%{prj.name}/src/**.hpp",
-		basepath.."%{prj.name}/src/**.c",
-		basepath.."%{prj.name}/src/**.cpp" 
+		basepath.."%{prj.name}/**"
 	}
+
 
 	if os.host() == "macosx" then
 		kind ("WindowedApp")
@@ -51,7 +48,9 @@ project "Lime"
 		kind ("WindowedApp")
 	
 		includedirs {
-			basepath.."%{prj.name}/lib/SDL2-2.0.12/include"
+			basepath.."%{prj.name}/lib/SDL2-2.0.12/include",
+			-- nlohmann json
+			basepath.."%{prj.name}/lib",
 		}
 		-- doing it only for 64 bit 
 		libdirs {
@@ -66,7 +65,7 @@ project "Lime"
 		}
 		p = "%{targetdir}"
 		postbuildcommands {
-			"{COPY} ..\\..\\lib\\SDL2-2.0.12\\lib\\x64\\SDL2.dll bin\\"..outputdir.."\\Lime"
+			"{COPY} %{prj.name}\\lib\\SDL2-2.0.12\\lib\\x64\\SDL2.dll %{cfg.buildtarget.directory}"
 		}
 	end
 
