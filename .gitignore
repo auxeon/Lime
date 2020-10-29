@@ -30,3 +30,19 @@
 *.exe
 *.out
 *.app
+
+# Common
+**/bin/
+**/bin-int/
+
+# MacOs crap
+.DS_Store
+**.xcworkspace
+**.xcodeproj
+
+# Windows crap
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+.vs/

@@ -1,0 +1,32 @@
+{
+    "entities": [
+        {
+            "EntityID": 0,
+            "components": [
+                {
+                    "ComponentData": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 0,
+                    "ComponentName": "TransformComponent"
+                }
+            ]
+        },
+        {
+            "EntityID": 1,
+            "components": [
+                {
+                    "ComponentData": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 0,
+                    "ComponentName": "TransformComponent"
+                }
+            ]
+        }
+    ]
+}
