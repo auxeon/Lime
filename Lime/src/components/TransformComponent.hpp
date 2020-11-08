@@ -6,6 +6,9 @@ public:
 	float x;
 	float y;
 	float z;
+	float sx;
+	float sy;
+	float sz;
 };
 
 

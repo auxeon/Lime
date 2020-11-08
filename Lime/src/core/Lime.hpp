@@ -5,6 +5,8 @@
 #include "EntityManager.hpp"
 #include "EventManager.hpp"
 #include "SystemManager.hpp"
+#include "ChrononManager.hpp"
+#include "GraphicsManager.hpp"
 #include "Types.hpp"
 
 
@@ -17,8 +19,62 @@ public:
 		mEntityManager = std::make_unique<EntityManager>();
 		mEventManager = std::make_unique<EventManager>();
 		mSystemManager = std::make_unique<SystemManager>();
+		mChrononManager = std::make_unique<ChrononManager>();
+		mGraphicsManager = std::make_unique<GraphicsManager>();
+		mIsRunning = true;
+		dt = 0.0;
+		
+		// set defaults 
+		setMaxFPS(60);
+
+		//Managers that have an explicit initialization
+		mGraphicsManager->init();
+	}
+	// GraphicsManager
+	void initGraphics() {
+		mGraphicsManager->init();
+	}
+	void printGraphicsInfo() {
+		mGraphicsManager->printInfo();
+	}
+	void updateGraphics() {
+		mGraphicsManager->update();
+	}
+	string getGraphicsWindowTitle() {
+		return mGraphicsManager->getWindowTitle();
+	}
+	void setGraphicsWindowTitle(string s) {
+		mGraphicsManager->setWindowTitle(s);
+	}
+	void resizeGraphicsWindow(unsigned int w, unsigned int h) {
+		mGraphicsManager->resize(w, h);
 	}
 
+	// ChrononManager
+	void startFrame() {
+		mChrononManager->startframe();
+	}
+
+	void endFrame() {
+		mChrononManager->endFrame();
+		dt = mChrononManager->updatedt();
+	}
+
+	double getFPS() {
+		return mChrononManager->getFPS();
+	}
+
+	void setMaxFPS(unsigned int maxfps) {
+		mChrononManager->setMaxFPS(maxfps);
+	}
+
+	double getUptime() {
+		return mChrononManager->getUptime();
+	}
+
+	long long getTotalFrames() {
+		return mChrononManager->getTotalFrames();
+	}
 
 	// entity
 	EntityID createEntity(){
@@ -72,7 +128,7 @@ public:
 	}
 
 	template<typename T>
-	void SetSystemArchetype(Archetype atype){
+	void setSystemArchetype(Archetype atype){
 		mSystemManager->setArchetype<T>(atype);
 	}
 
@@ -95,6 +151,10 @@ public:
 	std::unique_ptr<EntityManager> mEntityManager;
 	std::unique_ptr<EventManager> mEventManager;
 	std::unique_ptr<SystemManager> mSystemManager;
+	std::unique_ptr<ChrononManager> mChrononManager;
+	std::unique_ptr<GraphicsManager> mGraphicsManager;
+	bool mIsRunning = false;
+	double dt;
 };
 
 #endif

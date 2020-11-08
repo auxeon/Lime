@@ -20,9 +20,8 @@
 */
 
 // hack to make Pch Work with c files
-#define GLAD_PCH_EXCLUDE
+
 #include "Pch.hpp"
-#undef GLAD_PCH_EXCLUDE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
