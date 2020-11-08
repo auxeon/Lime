@@ -59,7 +59,9 @@ project "Lime"
 			basepath.."%{prj.name}/lib",
 			-- GLAD
 			basepath.."%{prj.name}/lib/glad/include",
-			basepath.."%{prj.name}/lib/glad/src"
+			basepath.."%{prj.name}/lib/glad/src",
+			-- spdlog
+			basepath.."%{prj.name}/lib/spdlog/include"
 		}
 		-- doing it only for 64 bit 
 		libdirs {
@@ -80,10 +82,13 @@ project "Lime"
 	end
 
 	filter "configurations:Debug"
-		defines { "DEBUG" }
-		symbols ("On")
+		defines "DEBUG"
+		symbols "On"
 
 	filter "configurations:Release"
-		defines { "NDEBUG" }
-		optimize ("On")
+		defines "NDEBUG" 
+		optimize "On"
 		
+	filter "files:**.c"
+		compileas "C++"
+

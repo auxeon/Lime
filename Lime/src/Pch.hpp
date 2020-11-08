@@ -1,7 +1,6 @@
 #ifndef PCH_HPP
 #define PCH_HPP
 
-#ifndef GLAD_PCH_EXCLUDE
 // stl includes
 #include <cassert>
 #include <iostream>
@@ -19,11 +18,14 @@
 #include <array>
 #include <deque>
 #include <unordered_map>
+#include <chrono>
+#include <limits>
+#include <sstream>
 
 // other
 #include "SDL.h"
 #include "nlohmann/json.hpp"
 #include "core/Types.hpp"
+#include "utils/Log.hpp"
 
-#endif // !GLAD_PCH_HPP
 #endif // !PCH_HPP

@@ -26,4 +26,12 @@ enum EventType {
 	TOTAL_EVENTS
 };
 
+typedef struct LMVec4 {
+	float x;
+	float y;
+	float z;
+	float w;
+}LMVec4;
+
+
 #endif
