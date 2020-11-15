@@ -7,12 +7,12 @@
 class EventManager
 {
 public:
-	void addListener(EventID eventId, std::function<void(Event&)> const& listener){
+	void addListener(EventID eventId, std::function<void (Event&)> const& listener){
 		listeners[eventId].push_back(listener);
 	}
 
 	void sendEvent(Event& event){
-		uint32_t type = event.getType();
+		EventID type = event.getType();
 		for (auto const& listener : listeners[type]){
 			listener(event);
 		}

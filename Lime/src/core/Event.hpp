@@ -24,6 +24,10 @@ public:
 		return mType;
 	}
 
+	string getTypeName() const {
+		return typeid(mType).name();
+	}
+
 private:
 	EventID mType{};
 	std::unordered_map<EventID, std::any> mData{};

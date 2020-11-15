@@ -12,6 +12,7 @@ public:
 		assert(mComponentTypes.find(typeName) == mComponentTypes.end() && "Registering component type more than once.");
 		mComponentTypes.insert({ typeName, mNextComponentID });
 		mComponentContainers.insert({ typeName, std::make_shared<ComponentContainer<T>>() });
+		LM_CORE_TRACE("[Component ID: {}] Component registered", mNextComponentID);
 		++mNextComponentID;
 	}
 
@@ -25,11 +26,14 @@ public:
 	template<typename T>
 	void addComponent(EntityID entity, T component){
 		getComponentContainer<T>()->insert(entity, component);
+		LM_CORE_TRACE("[Entity ID: {}] Component {} added", entity, getComponentType<T>());
 	}
 
 	template<typename T>
 	void removeComponent(EntityID entity){
+		auto comID = getComponentType<T>();
 		getComponentContainer<T>()->remove(entity);
+		LM_CORE_TRACE("[Entity ID: {}] Component {} removed", entity, comID);
 	}
 
 	template<typename T>

@@ -50,18 +50,21 @@ project "Lime"
 		kind ("WindowedApp")
 	
 		includedirs {
+			-- res containers
+			basepath.."%{prj.name}/res",
 			-- src 
 			basepath.."%{prj.name}/src",
 			-- lib includes
 			-- SDL2
 			basepath.."%{prj.name}/lib/SDL2-2.0.12/include",
 			-- nlohmann json
+			-- stb
 			basepath.."%{prj.name}/lib",
 			-- GLAD
 			basepath.."%{prj.name}/lib/glad/include",
 			basepath.."%{prj.name}/lib/glad/src",
 			-- spdlog
-			basepath.."%{prj.name}/lib/spdlog/include"
+			basepath.."%{prj.name}/lib/spdlog/include",
 		}
 		-- doing it only for 64 bit 
 		libdirs {

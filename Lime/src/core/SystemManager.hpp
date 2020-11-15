@@ -43,7 +43,21 @@ public:
 			}
 		}
 	}
-
+	void init() {
+		for (auto& sysPair : mSystems) {
+			sysPair.second->init();
+		}
+	}
+	void update() {
+		for (auto& sysPair : mSystems) {
+			sysPair.second->update();
+		}
+	}
+	void onEvent(Event& e) {
+		for (auto& sysPair : mSystems) {
+			sysPair.second->onEvent(e);
+		}
+	}
 private:
 	std::unordered_map<const char*, Archetype> mArchetypes{};
 	std::unordered_map<const char*, std::shared_ptr<System>> mSystems{};

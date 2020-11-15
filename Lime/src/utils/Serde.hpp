@@ -78,7 +78,7 @@ namespace sdj {
         // saving
         person p;
         p.name = "Abhikalp Unakal";
-        p.age = 36;
+        p.age = 0;
         p.car.carid = 1;
         p.car.carname = "Audi";
 

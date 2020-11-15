@@ -10,7 +10,6 @@
 #ifdef __APPLE__
 #include "platform/macos/Graphics.hpp"
 #endif
-
 class GraphicsManager {
 public:
 	void init() {
@@ -18,6 +17,9 @@ public:
 	}
 	void update() {
 		renderer.update();
+	}
+	void onEvent(Event& e) {
+		renderer.onEvent(e);
 	}
 	void resize(unsigned int w, unsigned int h) {
 		renderer.resize(w, h);
@@ -32,7 +34,8 @@ public:
 		renderer.printInfo();
 	}
 	
-private:
+//private:
+public:
 	Graphics renderer;
 };
 

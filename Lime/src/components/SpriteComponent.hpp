@@ -3,6 +3,10 @@
 #include "Pch.hpp"
 class SpriteComponent {
 	string sprite;
-	unsigned int texid;
+	int texid;
+	bool animated;
+	float duration;
+	unsigned int rows;
+	unsigned int cols;
 };
 #endif // !SPRITECOMPONENT_HPP

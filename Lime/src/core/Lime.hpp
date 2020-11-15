@@ -7,6 +7,7 @@
 #include "SystemManager.hpp"
 #include "ChrononManager.hpp"
 #include "GraphicsManager.hpp"
+#include "InputManager.hpp"
 #include "Types.hpp"
 
 
@@ -15,11 +16,14 @@ class Lime
 public:
 	// init
 	void init(){
-		mComponentManager = std::make_unique<ComponentManager>();
+		// ECS
 		mEntityManager = std::make_unique<EntityManager>();
-		mEventManager = std::make_unique<EventManager>();
+		mComponentManager = std::make_unique<ComponentManager>();
 		mSystemManager = std::make_unique<SystemManager>();
+		mEventManager = std::make_unique<EventManager>();
+		// OTHER
 		mChrononManager = std::make_unique<ChrononManager>();
+		mInputManager = std::make_unique<InputManager>();
 		mGraphicsManager = std::make_unique<GraphicsManager>();
 		mIsRunning = true;
 		dt = 0.0;
@@ -27,18 +31,82 @@ public:
 		// set defaults 
 		setMaxFPS(60);
 
-		//Managers that have an explicit initialization
+		// call init methods of managers
+		mInputManager->init();
+		mSystemManager->init();
 		mGraphicsManager->init();
 	}
+
+	void update() {
+		mInputManager->update();
+		mSystemManager->update();
+		mGraphicsManager->update();
+	}
+
+	void onEvent(Event& e) {
+		mInputManager->onEvent(e);
+		mSystemManager->onEvent(e);
+		mGraphicsManager->onEvent(e);
+	}
+
+	// wrappers for manager functions
+
+	// ChrononManager
+	void startFrame() {
+		mChrononManager->startframe();
+	}
+	void endFrame() {
+		mChrononManager->endFrame();
+		dt = mChrononManager->updatedt();
+	}
+	double getFPS() {
+		return mChrononManager->getFPS();
+	}
+	void setMaxFPS(unsigned int maxfps) {
+		mChrononManager->setMaxFPS(maxfps);
+	}
+	double getUptime() {
+		return mChrononManager->getUptime();
+	}
+	long long getTotalFrames() {
+		return mChrononManager->getTotalFrames();
+	}
+
+	// InputManager
+	bool isKeyPressed(SDL_Scancode keycode) {
+		return mInputManager->isKeyPressed(keycode);
+	}
+	bool isKeyReleased(SDL_Scancode keycode) {
+		return mInputManager->isKeyReleased(keycode);
+	}
+	bool isKeyTriggered(SDL_Scancode keycode) {
+		return mInputManager->isKeyTriggered(keycode);
+	}
+	void mouseButtonDown(SDL_Event event = SDL_Event()) {
+		mInputManager->mouseButtonDown(event);
+	}
+	bool mouseMove(SDL_Event event = SDL_Event()) {
+		return mInputManager->mouseMove(event);
+	}
+	void mouseButtonUp(SDL_Event event = SDL_Event()) {
+		mInputManager->mouseButtonUp(event);
+	}
+	bool getMouseButtonState(int buttonnumber) {
+		return mInputManager->getMouseButtonState(buttonnumber);
+	}
+	LMVec2* getMousePosition() {
+		return mInputManager->getMousePosition();
+	}
+	float mX() {
+		return mInputManager->mX();
+	}
+	float mY() {
+		return mInputManager->mY();
+	}
+
 	// GraphicsManager
-	void initGraphics() {
-		mGraphicsManager->init();
-	}
 	void printGraphicsInfo() {
 		mGraphicsManager->printInfo();
-	}
-	void updateGraphics() {
-		mGraphicsManager->update();
 	}
 	string getGraphicsWindowTitle() {
 		return mGraphicsManager->getWindowTitle();
@@ -50,37 +118,10 @@ public:
 		mGraphicsManager->resize(w, h);
 	}
 
-	// ChrononManager
-	void startFrame() {
-		mChrononManager->startframe();
-	}
-
-	void endFrame() {
-		mChrononManager->endFrame();
-		dt = mChrononManager->updatedt();
-	}
-
-	double getFPS() {
-		return mChrononManager->getFPS();
-	}
-
-	void setMaxFPS(unsigned int maxfps) {
-		mChrononManager->setMaxFPS(maxfps);
-	}
-
-	double getUptime() {
-		return mChrononManager->getUptime();
-	}
-
-	long long getTotalFrames() {
-		return mChrononManager->getTotalFrames();
-	}
-
 	// entity
 	EntityID createEntity(){
 		return mEntityManager->createEntity();
 	}
-
 	void destroyEntity(EntityID entity){
 		mEntityManager->destroyEntity(entity);
 		mComponentManager->entityDestroyed(entity);
@@ -92,7 +133,6 @@ public:
 	void registerComponent(){
 		mComponentManager->registerComponent<T>();
 	}
-
 	template<typename T>
 	void addComponent(EntityID entity, T component){
 		mComponentManager->addComponent<T>(entity, component);
@@ -101,7 +141,6 @@ public:
 		mEntityManager->setArchetype(entity, atype);
 		mSystemManager->entityArchetypeChanged(entity, atype);
 	}
-
 	template<typename T>
 	void removeComponent(EntityID entity){
 		mComponentManager->removeComponent<T>(entity);
@@ -110,12 +149,10 @@ public:
 		mEntityManager->setArchetype(entity, atype);
 		mSystemManager->entityArchetypeChanged(entity, atype);
 	}
-
 	template<typename T>
 	T& getComponent(EntityID entity){
 		return mComponentManager->getComponent<T>(entity);
 	}
-
 	template<typename T>
 	ComponentID getComponentType(){
 		return mComponentManager->getComponentType<T>();
@@ -126,22 +163,18 @@ public:
 	std::shared_ptr<T> registerSystem(){
 		return mSystemManager->registerSystem<T>();
 	}
-
 	template<typename T>
 	void setSystemArchetype(Archetype atype){
 		mSystemManager->setArchetype<T>(atype);
 	}
 
-
 	// event 
 	void addEventListener(EventID eventId, std::function<void(Event&)> const& listener){
 		mEventManager->addListener(eventId, listener);
 	}
-
 	void sendEvent(Event& event){
 		mEventManager->sendEvent(event);
 	}
-
 	void sendEvent(EventID eventId){
 		mEventManager->sendEvent(eventId);
 	}
@@ -153,6 +186,7 @@ public:
 	std::unique_ptr<SystemManager> mSystemManager;
 	std::unique_ptr<ChrononManager> mChrononManager;
 	std::unique_ptr<GraphicsManager> mGraphicsManager;
+	std::unique_ptr<InputManager> mInputManager;
 	bool mIsRunning = false;
 	double dt;
 };

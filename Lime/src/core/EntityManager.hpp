@@ -16,6 +16,7 @@ public:
 		mAllocdEntities.insert(id);
 		mAvailableEntities.pop_front();
 		++mLivingEntityCount;
+		LM_CORE_TRACE("[Entity ID: {}] Entity created", id);
 		return id;
 	}
 
@@ -25,11 +26,13 @@ public:
 		mAvailableEntities.push_back(entity);
 		mAllocdEntities.erase(entity);
 		--mLivingEntityCount;
+		LM_CORE_TRACE("[Entity ID: {}] Entity destroyed", entity);
 	}
 
 	void setArchetype(EntityID entity, Archetype atype){
 		assert(entity < MAX_ENTITIES && "EntityID out of range.");
 		mArchetypes[entity] = atype;
+		LM_CORE_TRACE("[Entity ID: {}] Archetype changed", entity);
 	}
 
 	Archetype getArchetype(EntityID entity){
@@ -40,7 +43,6 @@ public:
 	bool hasComponent(EntityID entity, ComponentID compid) {
 		return mArchetypes[entity].test(compid);
 	}
-
 public:
 	std::deque<EntityID> mAvailableEntities{};
 	std::set<EntityID> mAllocdEntities{};
