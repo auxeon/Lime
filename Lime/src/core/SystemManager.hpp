@@ -58,6 +58,12 @@ public:
 			sysPair.second->onEvent(e);
 		}
 	}
+	template <typename T>
+	std::shared_ptr<T> getSystem() {
+		const char* typeName = typeid(T).name();
+		std::shared_ptr<T> sys = std::static_pointer_cast<T>(mSystems[typeName]);
+		return (sys);
+	}
 private:
 	std::unordered_map<const char*, Archetype> mArchetypes{};
 	std::unordered_map<const char*, std::shared_ptr<System>> mSystems{};

@@ -8,6 +8,8 @@ public:
 	SDL_Scancode LEFT;
 	SDL_Scancode RIGHT;
 	SDL_Scancode ACTION01;
+	SDL_Scancode ROTLEFT;
+	SDL_Scancode ROTRIGHT;
 	LMVec3 STEP;
 };
 #endif // !CONTROLLERCOMPONENT_HPP

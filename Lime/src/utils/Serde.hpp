@@ -45,16 +45,16 @@ namespace sdj {
 
     void to_json(json& j, const TransformComponent& x) {
         j = json{
-            {"x",x.x},
-            {"y",x.y},
-            {"z",x.z}
+            {"x",x.position.x},
+            {"y",x.position.y},
+            {"z",x.position.z}
             };
     }
 
     void from_json(const json& j, TransformComponent& x) {
-        j.at("x").get_to(x.x);
-        j.at("y").get_to(x.y);
-        j.at("z").get_to(x.z);
+        j.at("x").get_to(x.position.x);
+        j.at("y").get_to(x.position.y);
+        j.at("z").get_to(x.position.z);
     }
 
 
@@ -105,7 +105,7 @@ namespace sdj {
             for (auto const& comp : entity["components"]) {
                 if (comp["ComponentID"] == 0) {
                     auto data = comp["ComponentData"];
-                    gLimeEngine.addComponent(ent, TransformComponent{ data["x"],data["y"],data["z"] });
+                    gLimeEngine.addComponent(ent, TransformComponent{ glm::vec3(data["x"],data["y"],data["z"]),glm::mat4(1.0f) });
                 }
             }
 

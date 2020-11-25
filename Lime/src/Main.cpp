@@ -10,13 +10,16 @@
 
 #include "Pch.hpp"
 #include "core/Lime.hpp"
-#include "core/Colors.hpp"
 #include "components/TransformComponent.hpp"
 #include "components/ControllerComponent.hpp"
+#include "components/CameraComponent.hpp"
+#include "components/SpriteComponent.hpp"
 #include "systems/ControllerSystem.hpp"
+#include "systems/CameraSystem.hpp"
 #include "systems/SpriteSystem.hpp"
 #include "utils/Serde.hpp"
 #include "cstdlib"
+#include "core/AudioManager.hpp"
 
 // force the usage of NVIDIA graphics
 // telling optimus to switch to nvidia graphics card instead of internal 
@@ -25,6 +28,8 @@
 //}
 
 Lime gLimeEngine;
+std::shared_ptr<CameraSystem> camSystem;
+
 
 #ifdef _WIN64
 #include "Windows.h"
@@ -138,6 +143,9 @@ void sdlPoll() {
 			gLimeEngine.sendEvent(event);
 		}
 		else if (e.type == SDL_KEYDOWN) {
+			if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+				gLimeEngine.sendEvent(EventID::E_GRAPHICS_DEBUG_TOGGLE);
+			}
 			Event event(EventID::E_WINDOW_KEY_PRESSED);
 			event.setParam<SDL_Scancode>(P_WINDOW_KEY_PRESSED_KEYCODE, e.key.keysym.scancode);
 			gLimeEngine.sendEvent(event);
@@ -151,11 +159,6 @@ void sdlPoll() {
 	}
 
 }
-
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 800
-#define FPS 120
-#define MAX_TITLE_LEN 80
 
 void fpsCounter() {
 	char title[MAX_TITLE_LEN];
@@ -173,85 +176,107 @@ int main(int argc, char** argv) {
 	Log::init();
 	
 	gLimeEngine.init();
+
 	gLimeEngine.registerComponent<TransformComponent>();
 	gLimeEngine.registerComponent<ControllerComponent>();
+	gLimeEngine.registerComponent<SpriteComponent>();
+	gLimeEngine.registerComponent<CameraComponent>();
 
 	// register system and set its signature 
 	gLimeEngine.registerSystem<ControllerSystem>();
 	gLimeEngine.registerSystem<SpriteSystem>();
+	gLimeEngine.registerSystem<CameraSystem>();
 
-	Archetype atype;
-	atype.set(gLimeEngine.getComponentType<TransformComponent>());
-	atype.set(gLimeEngine.getComponentType<ControllerComponent>());
-	gLimeEngine.setSystemArchetype<ControllerSystem>(atype);
+	// Controller System
+	{
+		Archetype atype;
+		atype.set(gLimeEngine.getComponentType<TransformComponent>());
+		atype.set(gLimeEngine.getComponentType<ControllerComponent>());
+		gLimeEngine.setSystemArchetype<ControllerSystem>(atype);
+	}
 
-	gLimeEngine.mSystemManager->init();
+	// Sprite System 
+	{
+		Archetype atype;
+		atype.set(gLimeEngine.getComponentType<SpriteComponent>());
+		gLimeEngine.setSystemArchetype<SpriteSystem>(atype);
+	}
 
+	// Camera Component
+	{
+		Archetype atype;
+		atype.set(gLimeEngine.getComponentType<TransformComponent>());
+		atype.set(gLimeEngine.getComponentType<ControllerComponent>());
+		atype.set(gLimeEngine.getComponentType<CameraComponent>());
+		gLimeEngine.setSystemArchetype<CameraSystem>(atype);
+	}
+	
 	gLimeEngine.setMaxFPS(FPS);
 	gLimeEngine.printGraphicsInfo();
 	gLimeEngine.resizeGraphicsWindow(SCREEN_WIDTH,SCREEN_HEIGHT);
 
+	// level related stuff here 
+
 	EntityID player1 = gLimeEngine.createEntity();
-	gLimeEngine.addComponent(player1, TransformComponent{ 100.0f,100.0f,1.0f });
+	gLimeEngine.addComponent(player1, TransformComponent{ glm::vec3(100.0f,100.0f,-0.1f),glm::mat4(1.0f) });
 	gLimeEngine.addComponent(player1, ControllerComponent{
 		SDL_SCANCODE_W,
 		SDL_SCANCODE_S,
 		SDL_SCANCODE_A,
 		SDL_SCANCODE_D,
-		SDL_SCANCODE_SPACE,
-		LMVec3{10.0f,10.0f,10.0f}});
+		SDL_SCANCODE_T,
+		SDL_SCANCODE_Q,
+		SDL_SCANCODE_E,
+		LMVec3{0.01f,0.01f,0.1f}});
+	gLimeEngine.addComponent(player1, SpriteComponent{ "./Lime/res/gear.png",(GLuint)-1,false,0.0f,1,1 });
 
-	EntityID player2 = gLimeEngine.createEntity();
-	gLimeEngine.addComponent(player2, TransformComponent{ 10.0f,10.0f,1.0f });
+	EntityID camera = gLimeEngine.createEntity();
+	gLimeEngine.addComponent(camera, TransformComponent{ glm::vec3{0.0f,0.0f,2.0f},glm::mat4(1.0f) });
+	gLimeEngine.addComponent(camera, ControllerComponent{
+	SDL_SCANCODE_T,
+	SDL_SCANCODE_G,
+	SDL_SCANCODE_F,
+	SDL_SCANCODE_H,
+	SDL_SCANCODE_T,
+	SDL_SCANCODE_R,
+	SDL_SCANCODE_Y,
+	LMVec3{0.01f,0.01f,0.1f} });
+	gLimeEngine.addComponent(camera, CameraComponent({
+		glm::vec3{0.0f,0.0f,-1.0f},	// look at [-z]
+		glm::vec3{0.0f,1.0f,0.0f},	// camera up [+y]
+		glm::vec3{1.0f,0.0f,0.0f},	// camera right [+x]
+		glm::vec3{0.0f,1.0f,0.0f},	// world up [+y]
+		glm::mat4(1.0f),			// camera projection matrix
+		glm::mat4(1.0f),			// camera view matrix
+		float {0.1f},				// camera zoom [0,1]
+		float {0.1f},				// camera sensitivity
+		float {0.0f},				// xrot pitch
+		float {0.0f},				// yrot yaw
+		float {1.0f},				// movement speed
+		int {0},					// viewport x topleft
+		int {0},					// viewport y topleft
+		int {SCREEN_WIDTH},			// viewport width
+		int {SCREEN_HEIGHT},		// viewport height
+		bool {false}				// is activated
+	}));
+
+	// providing access via global pointer to system
+	camSystem = gLimeEngine.mSystemManager->getSystem<CameraSystem>();
+	gLimeEngine.mSystemManager->init();
+
+	AudioManager au;
+	au.Init();
+	au.LoadSound("./Lime/res/martingarrix.mp3");
+	au.PlaySounds("./Lime/res/martingarrix.mp3");
 
 	while (gLimeEngine.mIsRunning) {
 		sdlPoll();
 		gLimeEngine.startFrame();
 		gLimeEngine.update();
-		//glClearColor(colors::emerald.x, colors::emerald.y, colors::emerald.z, colors::emerald.w);
-		//const float clear_color[4] = { 0.4, 0.4, 0.4, 1 };
-		const float clear_color[4] = { colors::emerald.x, colors::emerald.y, colors::emerald.z, colors::emerald.w };
-
-		// Clip window
-		glClipControl(GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE);
-		// Setup viewport 0
-		glViewportIndexedf(0, 0, 0, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
-		// Clear color buffer of current framebuffer(0)
-		glClearNamedFramebufferfv(0, GL_COLOR, 0, clear_color);
 		gLimeEngine.endFrame();
 		fpsCounter();
 	}
-	for (auto& e : gLimeEngine.mEntityManager->mAllocdEntities) {
-		gLimeEngine.mEntityManager->destroyEntity(e);
-	}
-
+	au.Shutdown();
 	system("pause");
 	return 0;
 }
-
-// dump
-// ECS DEMO
-//std::cout << "ECS DEMO\n-------------\n";
-//gLimeEngine.init();
-//std::cout << "game engine init done\n";
-
-//gLimeEngine.registerComponent<TransformComponent>();
-//std::cout << "TransformCompomnent registered\n";
-
-
-//// SERDE DEMO
-//// PLAIN COMPONENT
-//std::cout << "\nSERDE COMPONENT\n-------------\n";
-//sdj::exampleloadsave();
-
-//// LEVEL
-//std::cout << "\nSERDE LEVEL\n-------------\n";
-//EntityID player1 = gLimeEngine.createEntity();
-//gLimeEngine.addComponent(player1, TransformComponent{ 1.0f,1.0f,1.0f });
-//EntityID player2 = gLimeEngine.createEntity();
-//gLimeEngine.addComponent(player2, TransformComponent{ 1.0f,1.0f,1.0f });
-//sdj::levelloadsave();
-
-//gLimeEngine.destroyEntity(player1);
-//gLimeEngine.destroyEntity(player2);
-//std::cout << "\nEntities destroyed\n";

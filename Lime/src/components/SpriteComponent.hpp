@@ -2,8 +2,9 @@
 #define SPRITECOMPONENT_HPP
 #include "Pch.hpp"
 class SpriteComponent {
+public:
 	string sprite;
-	int texid;
+	GLuint texid;
 	bool animated;
 	float duration;
 	unsigned int rows;

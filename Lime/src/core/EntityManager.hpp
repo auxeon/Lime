@@ -10,6 +10,16 @@ public:
 			mAvailableEntities.push_back(entity);
 		}
 	}
+	// destructors not needed as the containers will get destroyed at scope end
+	//~EntityManager() {
+	//	std::vector<EntityID> allocd;
+	//	for (auto& e : mAllocdEntities) {
+	//		allocd.push_back(e);
+	//	}
+	//	for (auto& e : allocd) {
+	//		destroyEntity(e);
+	//	}
+	//}
 	EntityID createEntity(){
 		assert(mLivingEntityCount < MAX_ENTITIES && "Too many entities in existence.");
 		EntityID id = mAvailableEntities.front();
@@ -43,6 +53,7 @@ public:
 	bool hasComponent(EntityID entity, ComponentID compid) {
 		return mArchetypes[entity].test(compid);
 	}
+
 public:
 	std::deque<EntityID> mAvailableEntities{};
 	std::set<EntityID> mAllocdEntities{};

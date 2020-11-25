@@ -1,6 +1,7 @@
 #include "Pch.hpp"
 #include "Graphics.hpp"
 #include "core/Lime.hpp"
+#include "core/Colors.hpp"
 
 extern Lime gLimeEngine;
 
@@ -26,8 +27,8 @@ std::shared_ptr<T> sdl_shared(T* t) {
 
 Graphics::Graphics() {
 	// set screen width and height
-	mScreenWidth = 800;
-	mScreenHeight = 600;
+	mScreenWidth = SCREEN_WIDTH;
+	mScreenHeight = SCREEN_HEIGHT;
 	mWindowTitle = "[Lime]";
 	mOpenGLContext = NULL;
 	mWindow = NULL;
@@ -68,14 +69,16 @@ void Graphics::init() {
 #endif
 }
 void Graphics::update() {
-	//glClear(GL_COLOR_BUFFER_BIT);
 	SDL_GL_SwapWindow(mWindow.get());
+	//glClearColor(colors::emerald.x, colors::emerald.y, colors::emerald.z, colors::emerald.w);
+	//glClear(GL_COLOR_BUFFER_BIT);
 }
 void Graphics::resize(unsigned int w, unsigned int h) {
 	mScreenWidth = w;
 	mScreenHeight = h;
 	SDL_SetWindowSize(mWindow.get(), w, h);
 	glViewport(0, 0, w, h);
+	// add another viewport here 
 }
 string Graphics::getWindowTitle() {
 	return mWindowTitle;

@@ -8,12 +8,30 @@
 #include "ChrononManager.hpp"
 #include "GraphicsManager.hpp"
 #include "InputManager.hpp"
+#include "ResourceManager.hpp"
 #include "Types.hpp"
 
 
 class Lime
 {
 public:
+	// serde
+	void serialize(EntityID entity) {
+
+	}
+
+	EntityID deserialize(json j) {
+
+	}
+
+	// load 
+	void load(string filepath) {
+
+	}
+	// save
+	void save(string filepath) {
+
+	}
 	// init
 	void init(){
 		// ECS
@@ -25,6 +43,7 @@ public:
 		mChrononManager = std::make_unique<ChrononManager>();
 		mInputManager = std::make_unique<InputManager>();
 		mGraphicsManager = std::make_unique<GraphicsManager>();
+		mResourceManager = std::make_unique<ResourceManager>();
 		mIsRunning = true;
 		dt = 0.0;
 		
@@ -35,18 +54,21 @@ public:
 		mInputManager->init();
 		mSystemManager->init();
 		mGraphicsManager->init();
+		mResourceManager->init();
 	}
 
 	void update() {
 		mInputManager->update();
 		mSystemManager->update();
 		mGraphicsManager->update();
+		mResourceManager->update();
 	}
 
 	void onEvent(Event& e) {
 		mInputManager->onEvent(e);
 		mSystemManager->onEvent(e);
 		mGraphicsManager->onEvent(e);
+		mResourceManager->onEvent(e);
 	}
 
 	// wrappers for manager functions
@@ -118,6 +140,12 @@ public:
 		mGraphicsManager->resize(w, h);
 	}
 
+	// ResourceManager
+	template <typename T>
+	T& getOrLoadResource(string resloc) {
+		return mResourceManager->get<T>(resloc);
+	}
+
 	// entity
 	EntityID createEntity(){
 		return mEntityManager->createEntity();
@@ -187,6 +215,7 @@ public:
 	std::unique_ptr<ChrononManager> mChrononManager;
 	std::unique_ptr<GraphicsManager> mGraphicsManager;
 	std::unique_ptr<InputManager> mInputManager;
+	std::unique_ptr<ResourceManager> mResourceManager;
 	bool mIsRunning = false;
 	double dt;
 };

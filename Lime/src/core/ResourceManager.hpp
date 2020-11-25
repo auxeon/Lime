@@ -1,8 +1,6 @@
 #ifndef RESOURCEMANAGER_HPP
 #define RESOURCEMANAGER_HPP
 #include "Pch.hpp"
-#include "Types.hpp"
-#include "Event.hpp"
 // if windows
 #ifdef _WIN64
 #include "platform/windows/ResourceLoader.hpp"
@@ -29,11 +27,15 @@ public:
 		ResourceID id;
 		if (mResID.count(resloc)>0) {
 			id = mResID[resloc];
-			return std::any_cast<T>(mResPool[id]);
+			return std::any_cast<T&>(mResPool[id]);
 		}
-		mNextRes += 1;
+	
 		mResID[resloc] = mNextRes;
-		mResPool[mNextRes] = loadResource<T>(resloc);
+		T res;
+		loadResource(res,resloc);
+		mResPool[mNextRes] = res;
+		++mNextRes;
+		return std::any_cast<T&>(mResPool[mNextRes-1]);
 	}
 private:
 	std::unordered_map<std::string, ResourceID> mResID;

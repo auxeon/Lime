@@ -1,14 +1,11 @@
 #ifndef TRANSFORMCOMPONENT_HPP
 #define TRANSFORMCOMPONENT_HPP
 #include "Pch.hpp"
+#include "glm/glm.hpp"
 class TransformComponent {
 public:
-	float x;
-	float y;
-	float z;
-	float sx;
-	float sy;
-	float sz;
+	glm::vec3 position;
+	glm::mat4 matrix;
 };
 
 
