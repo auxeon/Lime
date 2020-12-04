@@ -1,0 +1,69 @@
+{
+    "CameraComponent": null,
+    "ControllerComponent": {
+        "ACTION01": "SDL_SCANCODE_T",
+        "DOWN": "SDL_SCANCODE_S",
+        "LEFT": "SDL_SCANCODE_A",
+        "RIGHT": "SDL_SCANCODE_D",
+        "ROTLEFT": "SDL_SCANCODE_Q",
+        "ROTRIGHT": "SDL_SCANCODE_E",
+        "STEP": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "UP": "SDL_SCANCODE_W"
+    },
+    "PlayerComponent": {
+        "energy": 0.0,
+        "health": 100.0,
+        "score": 0.0,
+        "speed": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "state": "PS_IDLE"
+    },
+    "SpriteComponent": {
+        "animated": false,
+        "cols": 1,
+        "duration": 0.0,
+        "rows": 1,
+        "sprite": "./Lime/res/gear.png",
+        "texid": 4294967295
+    },
+    "TransformComponent": {
+        "matrix": [
+            [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        ],
+        "position": {
+            "x": 100.0,
+            "y": 100.0,
+            "z": 0.0
+        }
+    }
+}

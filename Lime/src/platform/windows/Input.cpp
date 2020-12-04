@@ -14,7 +14,7 @@ void Input::init() {
 	memset(mPrevKeyboardState, 0, mKeyCount * sizeof(Uint8));
 
 	// mouse stuff
-	mMousePosition = new LMVec2{ 0.0f, 0.0f };
+	mMousePosition = new glm::vec2{ 0.0f, 0.0f };
 
 	//reset all states
 	for (int i = 0; i < (int)mouseButtons::TOTAL; i++) {
@@ -61,9 +61,6 @@ void Input::onEvent(Event& e) {
 		auto x = e.getParam<float>(EventID::P_WINDOW_MOUSE_MOVE_X);
 		auto y = e.getParam<float>(EventID::P_WINDOW_MOUSE_MOVE_Y);
 		LM_CORE_TRACE("[EVENT ID: {}] Mouse move position: ({},{})", e.getType(), x, y);
-	}
-	else{
-		LM_CORE_TRACE("INVALID EVENT");
 	}
 	
 }
@@ -122,7 +119,7 @@ bool Input::getMouseButtonState(int buttonNumber) {
 	return mMouseButtonStates[buttonNumber];
 }
 
-LMVec2* Input::getMousePosition() {
+glm::vec2* Input::getMousePosition() {
 	return mMousePosition;
 }
 

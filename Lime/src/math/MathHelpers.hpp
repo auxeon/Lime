@@ -54,7 +54,7 @@ void orthoSetProjection(CameraComponent& cam, float left, float right, float bot
 }
 
 void orthoUpdateView(CameraComponent& cam, TransformComponent& txfm) {
-	cam.viewmat = glm::lookAt(txfm.position, txfm.position + cam.lookat, cam.wup);
+	cam.viewmat = glm::lookAt(txfm.position, txfm.position + cam.lookat, cam.up);
 }
 
 #endif // !MATHHELPERS_HPP

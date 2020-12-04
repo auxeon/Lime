@@ -17,7 +17,7 @@ public:
 	bool mouseMove(SDL_Event event = SDL_Event());
 	void mouseButtonUp(SDL_Event event = SDL_Event());
 	bool getMouseButtonState(int buttonNumber);
-	LMVec2* getMousePosition();
+	glm::vec2* getMousePosition();
 	float mX();
 	float mY();
 private:
@@ -28,7 +28,7 @@ private:
 
 	// mouse stuff
 	vecbool mMouseButtonStates;
-	LMVec2* mMousePosition;
+	glm::vec2* mMousePosition;
 
 	float mMouseDX;
 	float mMouseDY;

@@ -44,7 +44,7 @@ public:
 	bool getMouseButtonState(int buttonnumber) {
 		return io.getMouseButtonState(buttonnumber);
 	}
-	LMVec2* getMousePosition() {
+	glm::vec2* getMousePosition() {
 		return io.getMousePosition();
 	}
 	float mX() {

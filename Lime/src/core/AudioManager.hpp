@@ -31,10 +31,10 @@ typedef struct
 
 
 struct Implementation {
-	Implementation();
-	~Implementation();
+	inline Implementation();
+	inline ~Implementation();
 
-	void Update();
+	inline void Update();
 
 	FMOD::Studio::System* mpStudioSystem;
 	FMOD::System* mpSystem;
@@ -56,43 +56,43 @@ struct Implementation {
 
 class AudioManager {
 public:
-	static bool Init();
-	static void Update();
-	static void Shutdown();
-	static int ErrorCheck(FMOD_RESULT result);
+	inline static bool Init();
+	inline static void Update();
+	inline static void Shutdown();
+	inline static int ErrorCheck(FMOD_RESULT result);
 
-	void LoadBank(const std::string& strBankName, FMOD_STUDIO_LOAD_BANK_FLAGS flags);
-	void LoadEvent(const std::string& strEventName);
-	void LoadSound(const string& strSoundName, bool b3d = true, bool bLooping = false, bool bStream = false);
-	void UnLoadSound(const string& strSoundName);
-	void Set3dListenerAndOrientation(const Vector3& vPosition, const Vector3& vLook, const Vector3& vUp);
-	int PlaySounds(const string& strSoundName, const Vector3& vPos = Vector3{ 0, 0, 0 }, float fVolumedB = 0.0f);
-	void PlayEvent(const string& strEventName);
-	void StopChannel(int nChannelId);
-	void StopEvent(const string& strEventName, bool bImmediate = false);
-	void GetEventParameter(const string& strEventName, const string& strEventParameter, float* parameter);
-	void SetEventParameter(const string& strEventName, const string& strParameterName, float fValue);
-	void StopAllChannels();
-	void SetChannel3dPosition(int nChannelId, const Vector3& vPosition);
-	void SetChannelVolume(int nChannelId, float fVolumedB);
-	bool IsPlaying(int nChannelId) const;
-	bool IsEventPlaying(const string& strEventName) const;
-	float dbToVolume(float dB);
-	float VolumeTodB(float volume);
-	FMOD_VECTOR VectorToFmod(const Vector3& vPosition);
-	FMOD_DSP_PARAMETER_FFT* GetSpectrumData();
+	inline void LoadBank(const std::string& strBankName, FMOD_STUDIO_LOAD_BANK_FLAGS flags);
+	inline void LoadEvent(const std::string& strEventName);
+	inline void LoadSound(const string& strSoundName, bool b3d = true, bool bLooping = false, bool bStream = false);
+	inline void UnLoadSound(const string& strSoundName);
+	inline void Set3dListenerAndOrientation(const Vector3& vPosition, const Vector3& vLook, const Vector3& vUp);
+	inline int PlaySounds(const string& strSoundName, const Vector3& vPos = Vector3{ 0, 0, 0 }, float fVolumedB = 0.0f);
+	inline void PlayEvent(const string& strEventName);
+	inline void StopChannel(int nChannelId);
+	inline void StopEvent(const string& strEventName, bool bImmediate = false);
+	inline void GetEventParameter(const string& strEventName, const string& strEventParameter, float* parameter);
+	inline void SetEventParameter(const string& strEventName, const string& strParameterName, float fValue);
+	inline void StopAllChannels();
+	inline void SetChannel3dPosition(int nChannelId, const Vector3& vPosition);
+	inline void SetChannelVolume(int nChannelId, float fVolumedB);
+	inline bool IsPlaying(int nChannelId) const;
+	inline bool IsEventPlaying(const string& strEventName) const;
+	inline float dbToVolume(float dB);
+	inline float VolumeTodB(float volume);
+	inline FMOD_VECTOR VectorToFmod(const Vector3& vPosition);
+	inline FMOD_DSP_PARAMETER_FFT* GetSpectrumData();
 
 
 	/*FMOD_RESULT F_CALLBACK myDSPCallback(FMOD_DSP_STATE* dsp_state, float* inbuffer, float* outbuffer, unsigned int length, int inchannels, int* outchannels);
 	FMOD_RESULT F_CALLBACK myDSPCreateCallback(FMOD_DSP_STATE* dsp_state);
 	FMOD_RESULT F_CALLBACK myDSPReleaseCallback(FMOD_DSP_STATE* dsp_state);
-	FMOD_RESULT F_CALLBACK myDSPGetParameterDataCallback(FMOD_DSP_STATE* dsp_state, int index, void** data, unsigned int* length, char*);
+	FMOD_RESULT F_CALLBACK myDSPGetParameterDataCallback(FMOD_DSP_STATE* dsp_state, int index, inline void** data, unsigned int* length, char*);
 	FMOD_RESULT F_CALLBACK myDSPSetParameterFloatCallback(FMOD_DSP_STATE* dsp_state, int index, float value);
 	FMOD_RESULT F_CALLBACK myDSPGetParameterFloatCallback(FMOD_DSP_STATE* dsp_state, int index, float* value, char* valstr);*/
 
 };
 
-Implementation::Implementation() : mnNextChannelId(0) {
+inline Implementation::Implementation() : mnNextChannelId(0) {
 	mpStudioSystem = NULL;
 	AudioManager::ErrorCheck(FMOD::Studio::System::create(&mpStudioSystem));
 	AudioManager::ErrorCheck(mpStudioSystem->initialize(32, FMOD_STUDIO_INIT_LIVEUPDATE, FMOD_INIT_PROFILE_ENABLE, NULL));
@@ -110,7 +110,7 @@ Implementation::Implementation() : mnNextChannelId(0) {
 
 }
 
-Implementation::~Implementation() {
+inline Implementation::~Implementation() {
 
 	AudioManager::ErrorCheck(mpMasterChannelGroup->removeDSP(mpDSP));
 	AudioManager::ErrorCheck(mpDSP->release());
@@ -119,7 +119,7 @@ Implementation::~Implementation() {
 	AudioManager::ErrorCheck(mpStudioSystem->release());
 }
 
-void Implementation::Update() {
+inline void Implementation::Update() {
 	vector<ChannelMap::iterator> pStoppedChannels;
 	for (auto it = mChannels.begin(), itEnd = mChannels.end(); it != itEnd; ++it)
 	{
@@ -137,9 +137,9 @@ void Implementation::Update() {
 	AudioManager::ErrorCheck(mpStudioSystem->update());
 }
 
-Implementation* sgpImplementation = nullptr;
+inline Implementation* sgpImplementation = nullptr;
 
-bool AudioManager::Init() {
+inline bool AudioManager::Init() {
 	sgpImplementation = new Implementation();
 	if (sgpImplementation) {
 		return true;
@@ -147,11 +147,11 @@ bool AudioManager::Init() {
 	return false;
 }
 
-void AudioManager::Update() {
+inline void AudioManager::Update() {
 	sgpImplementation->Update();
 }
 
-void AudioManager::LoadSound(const std::string& strSoundName, bool b3d, bool bLooping, bool bStream)
+inline void AudioManager::LoadSound(const std::string& strSoundName, bool b3d, bool bLooping, bool bStream)
 {
 	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
 	if (tFoundIt != sgpImplementation->mSounds.end())
@@ -167,7 +167,7 @@ void AudioManager::LoadSound(const std::string& strSoundName, bool b3d, bool bLo
 	}
 }
 
-void AudioManager::UnLoadSound(const std::string& strSoundName)
+inline void AudioManager::UnLoadSound(const std::string& strSoundName)
 {
 	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
 	if (tFoundIt == sgpImplementation->mSounds.end())
@@ -176,7 +176,7 @@ void AudioManager::UnLoadSound(const std::string& strSoundName)
 	sgpImplementation->mSounds.erase(tFoundIt);
 }
 
-int AudioManager::PlaySounds(const string& strSoundName, const Vector3& vPosition, float fVolumedB)
+inline int AudioManager::PlaySounds(const string& strSoundName, const Vector3& vPosition, float fVolumedB)
 {
 	int nChannelId = sgpImplementation->mnNextChannelId++;
 	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
@@ -206,7 +206,7 @@ int AudioManager::PlaySounds(const string& strSoundName, const Vector3& vPositio
 	return nChannelId;
 }
 
-void AudioManager::SetChannel3dPosition(int nChannelId, const Vector3& vPosition)
+inline void AudioManager::SetChannel3dPosition(int nChannelId, const Vector3& vPosition)
 {
 	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
 	if (tFoundIt == sgpImplementation->mChannels.end())
@@ -216,7 +216,7 @@ void AudioManager::SetChannel3dPosition(int nChannelId, const Vector3& vPosition
 	AudioManager::ErrorCheck(tFoundIt->second->set3DAttributes(&position, NULL));
 }
 
-void AudioManager::SetChannelVolume(int nChannelId, float fVolumedB)
+inline void AudioManager::SetChannelVolume(int nChannelId, float fVolumedB)
 {
 	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
 	if (tFoundIt == sgpImplementation->mChannels.end())
@@ -225,7 +225,7 @@ void AudioManager::SetChannelVolume(int nChannelId, float fVolumedB)
 	AudioManager::ErrorCheck(tFoundIt->second->setVolume(dbToVolume(fVolumedB)));
 }
 
-void AudioManager::LoadBank(const std::string& strBankName, FMOD_STUDIO_LOAD_BANK_FLAGS flags) {
+inline void AudioManager::LoadBank(const std::string& strBankName, FMOD_STUDIO_LOAD_BANK_FLAGS flags) {
 	auto tFoundIt = sgpImplementation->mBanks.find(strBankName);
 	if (tFoundIt != sgpImplementation->mBanks.end())
 		return;
@@ -236,7 +236,7 @@ void AudioManager::LoadBank(const std::string& strBankName, FMOD_STUDIO_LOAD_BAN
 	}
 }
 
-void AudioManager::LoadEvent(const std::string& strEventName) {
+inline void AudioManager::LoadEvent(const std::string& strEventName) {
 	auto tFoundit = sgpImplementation->mEvents.find(strEventName);
 	if (tFoundit != sgpImplementation->mEvents.end())
 		return;
@@ -251,7 +251,7 @@ void AudioManager::LoadEvent(const std::string& strEventName) {
 	}
 }
 
-void AudioManager::PlayEvent(const string& strEventName) {
+inline void AudioManager::PlayEvent(const string& strEventName) {
 	auto tFoundit = sgpImplementation->mEvents.find(strEventName);
 	if (tFoundit == sgpImplementation->mEvents.end()) {
 		LoadEvent(strEventName);
@@ -262,7 +262,7 @@ void AudioManager::PlayEvent(const string& strEventName) {
 	tFoundit->second->start();
 }
 
-void AudioManager::StopEvent(const string& strEventName, bool bImmediate) {
+inline void AudioManager::StopEvent(const string& strEventName, bool bImmediate) {
 	auto tFoundIt = sgpImplementation->mEvents.find(strEventName);
 	if (tFoundIt == sgpImplementation->mEvents.end())
 		return;
@@ -271,7 +271,7 @@ void AudioManager::StopEvent(const string& strEventName, bool bImmediate) {
 	AudioManager::ErrorCheck(tFoundIt->second->stop(eMode));
 }
 
-bool AudioManager::IsEventPlaying(const string& strEventName) const {
+inline bool AudioManager::IsEventPlaying(const string& strEventName) const {
 	auto tFoundIt = sgpImplementation->mEvents.find(strEventName);
 	if (tFoundIt == sgpImplementation->mEvents.end())
 		return false;
@@ -283,7 +283,7 @@ bool AudioManager::IsEventPlaying(const string& strEventName) const {
 	return false;
 }
 
-void AudioManager::GetEventParameter(const string& strEventName, const string& strParameterName, float* parameter) {
+inline void AudioManager::GetEventParameter(const string& strEventName, const string& strParameterName, float* parameter) {
 	auto tFoundIt = sgpImplementation->mEvents.find(strEventName);
 	if (tFoundIt == sgpImplementation->mEvents.end())
 		return;
@@ -295,7 +295,7 @@ void AudioManager::GetEventParameter(const string& strEventName, const string& s
 	AudioManager::ErrorCheck(tFoundIt->second->getParameterByName(strParameterName.c_str(), NULL, parameter));
 }
 
-void AudioManager::SetEventParameter(const string& strEventName, const string& strParameterName, float fValue) {
+inline void AudioManager::SetEventParameter(const string& strEventName, const string& strParameterName, float fValue) {
 	auto tFoundIt = sgpImplementation->mEvents.find(strEventName);
 	if (tFoundIt == sgpImplementation->mEvents.end())
 		return;
@@ -308,7 +308,7 @@ void AudioManager::SetEventParameter(const string& strEventName, const string& s
 	AudioManager::ErrorCheck(tFoundIt->second->setParameterByName(strParameterName.c_str(), fValue));
 }
 
-FMOD_VECTOR AudioManager::VectorToFmod(const Vector3& vPosition) {
+inline FMOD_VECTOR AudioManager::VectorToFmod(const Vector3& vPosition) {
 	FMOD_VECTOR fVec;
 	fVec.x = vPosition.x;
 	fVec.y = vPosition.y;
@@ -316,7 +316,7 @@ FMOD_VECTOR AudioManager::VectorToFmod(const Vector3& vPosition) {
 	return fVec;
 }
 
-int AudioManager::ErrorCheck(FMOD_RESULT result) {
+inline int AudioManager::ErrorCheck(FMOD_RESULT result) {
 	if (result != FMOD_OK) {
 		cout << "FMOD ERROR " << result << endl;
 		return 1;
@@ -325,21 +325,21 @@ int AudioManager::ErrorCheck(FMOD_RESULT result) {
 	return 0;
 }
 
-float  AudioManager::dbToVolume(float dB)
+inline float  AudioManager::dbToVolume(float dB)
 {
 	return powf(10.0f, 0.05f * dB);
 }
 
-float  AudioManager::VolumeTodB(float volume)
+inline float  AudioManager::VolumeTodB(float volume)
 {
 	return 20.0f * log10f(volume);
 }
 
-void AudioManager::Shutdown() {
+inline void AudioManager::Shutdown() {
 	delete sgpImplementation;
 }
 
-bool AudioManager::IsPlaying(int nChannelId) const {
+inline bool AudioManager::IsPlaying(int nChannelId) const {
 	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
 	if (tFoundIt == sgpImplementation->mChannels.end())
 		return false;
@@ -350,7 +350,7 @@ bool AudioManager::IsPlaying(int nChannelId) const {
 }
 
 
-void AudioManager::StopChannel(int nChannelId) {
+inline void AudioManager::StopChannel(int nChannelId) {
 	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
 	if (tFoundIt == sgpImplementation->mChannels.end())
 		return;
@@ -358,13 +358,13 @@ void AudioManager::StopChannel(int nChannelId) {
 	AudioManager::ErrorCheck(tFoundIt->second->stop());
 }
 
-void AudioManager::StopAllChannels() {
+inline void AudioManager::StopAllChannels() {
 	for (auto it = sgpImplementation->mChannels.begin(); it != sgpImplementation->mChannels.end(); ++it) {
 		AudioManager::ErrorCheck(it->second->stop());
 	}
 }
 
-void AudioManager::Set3dListenerAndOrientation(const Vector3& vPosition, const Vector3& vLook, const Vector3& vUp) {
+inline void AudioManager::Set3dListenerAndOrientation(const Vector3& vPosition, const Vector3& vLook, const Vector3& vUp) {
 	const FMOD_VECTOR pos = VectorToFmod(vPosition);
 	const FMOD_VECTOR look = VectorToFmod(vLook);
 	const FMOD_VECTOR up = VectorToFmod(vUp);

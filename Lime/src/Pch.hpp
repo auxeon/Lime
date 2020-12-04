@@ -21,11 +21,12 @@
 #include <chrono>
 #include <limits>
 #include <sstream>
+#include <stack>
 
 // other
+#include "utils/Log.hpp"
 #include "SDL.h"
 #include "nlohmann/json.hpp"
 #include "core/Types.hpp"
-#include "utils/Log.hpp"
 
 #endif // !PCH_HPP

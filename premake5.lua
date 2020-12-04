@@ -121,12 +121,16 @@ project "Lime"
 			'{COPY} "%{prj.name}\\lib\\fmod-2.01.06\\api\\core\\lib\\x64\\fmod.dll" "%{cfg.buildtarget.directory}"',
 				-- bank
 			'{COPY} "%{prj.name}\\lib\\fmod-2.01.06\\api\\fsbank\\lib\\x64\\fsbank.dll" "%{cfg.buildtarget.directory}"',
-			'{COPY} "%{prj.name}\\lib\\fmod-2.01.06\\api\\fsbank\\lib\\x64\\libfsvorbis64.dll" "%{cfg.buildtarget.directory}"',
+			'{COPY} "%{prj.name}\\lib\\fmod-2.01.06\\api\\fsbank\\lib\\x64\\libfsbvorbis64.dll" "%{cfg.buildtarget.directory}"',
 			'{COPY} "%{prj.name}\\lib\\fmod-2.01.06\\api\\fsbank\\lib\\x64\\opus.dll" "%{cfg.buildtarget.directory}"',
 				-- studio
 			'{COPY} "%{prj.name}\\lib\\fmod-2.01.06\\api\\studio\\lib\\x64\\fmodstudio.dll" "%{cfg.buildtarget.directory}"'
 		}
 
+		buildoptions {
+			-- multiprocessor compile switch enable 
+			"/MP"
+		}
 	end
 
 	filter "configurations:Debug"

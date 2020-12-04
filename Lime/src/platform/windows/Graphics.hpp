@@ -5,6 +5,7 @@
 #include "glad/glad.h"
 #include "SDL.h"
 #include "SDL_opengl.h"
+
 class Event;
 
 class Graphics {

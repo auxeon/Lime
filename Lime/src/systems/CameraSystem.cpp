@@ -17,6 +17,12 @@ using cm = CameraComponent;
 
 
 void CameraSystem::init(){
+
+	for (auto& entity : mEntities) {
+		auto& ctrl = gLimeEngine.getComponent<cp>(entity);
+		auto& txfm = gLimeEngine.getComponent<tf>(entity);
+		auto& cam = gLimeEngine.getComponent<cm>(entity);
+	}
 	// register the call backs 
 	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
 	gLimeEngine.addEventListener(EventID::E_WINDOW_MOUSE_MOVE, [this](Event& e) {this->onEvent(e); });
@@ -64,8 +70,8 @@ void CameraSystem::onEvent(Event& e){
 	}
 
 	if (e.getType() == EventID::E_WINDOW_RESIZED) {
-		auto w = e.getParam<unsigned int>(EventID::P_WINDOW_RESIZED_WIDTH);
-		auto h = e.getParam<unsigned int>(EventID::P_WINDOW_RESIZED_HEIGHT);
+		auto w = (int)e.getParam<unsigned int>(EventID::P_WINDOW_RESIZED_WIDTH);
+		auto h = (int)e.getParam<unsigned int>(EventID::P_WINDOW_RESIZED_HEIGHT);
 		for (auto entity : mEntities) {
 			auto& ctrl = gLimeEngine.getComponent<cp>(entity);
 			auto& txfm = gLimeEngine.getComponent<tf>(entity);

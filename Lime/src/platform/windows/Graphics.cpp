@@ -1,7 +1,7 @@
 #include "Pch.hpp"
 #include "Graphics.hpp"
 #include "core/Lime.hpp"
-#include "core/Colors.hpp"
+#include "glm/glm.hpp"
 
 extern Lime gLimeEngine;
 
@@ -67,11 +67,16 @@ void Graphics::init() {
 #ifdef _WIN64
 		gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 #endif
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendEquation(GL_FUNC_ADD);
 }
 void Graphics::update() {
 	SDL_GL_SwapWindow(mWindow.get());
-	//glClearColor(colors::emerald.x, colors::emerald.y, colors::emerald.z, colors::emerald.w);
-	//glClear(GL_COLOR_BUFFER_BIT);
+	glViewport(0, 0, mScreenWidth, mScreenHeight);
+	glClear(GL_COLOR_BUFFER_BIT);
+
 }
 void Graphics::resize(unsigned int w, unsigned int h) {
 	mScreenWidth = w;

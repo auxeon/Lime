@@ -6,29 +6,30 @@
 #include "components/TransformComponent.hpp"
 #include "components/ControllerComponent.hpp"
 #include "components/CameraComponent.hpp"
+#include "glm/gtx/transform.hpp"
 
 using cp = ControllerComponent;
 using tf = TransformComponent;
 using cm = CameraComponent;
 extern Lime gLimeEngine;
-extern std::shared_ptr<CameraSystem> camSystem;
+std::shared_ptr<CameraSystem> camSystem;
 
 void SpriteSystem::init(){
 
-    // setup shaders 
-
     mShader.init("./Lime/shaders/texture.vert", "./Lime/shaders/texture.frag");
-    glGenVertexArrays(1, &mVAO);
-    glGenBuffers(1, &mVBO);
-    glGenBuffers(1, &mEBO);
 
-    glBindVertexArray(mVAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(mVertices), mVertices, GL_STATIC_DRAW);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(mIndices), mIndices, GL_STATIC_DRAW);
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -40,30 +41,38 @@ void SpriteSystem::init(){
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    // setup texture stuff here 
-    for (auto& entity : mEntities) {
+    for (auto const& entity : mEntities) {
         auto& spriteComponent = gLimeEngine.getComponent<SpriteComponent>(entity);
         glGenTextures(1, &spriteComponent.texid);
         glBindTexture(GL_TEXTURE_2D, spriteComponent.texid);
         // set the texture wrapping parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         // set texture filtering parameters
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+        // load image, create texture and generate mipmaps
         auto& img = gLimeEngine.getOrLoadResource<Image>(spriteComponent.sprite);
-        if (img.imagedata) {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.w, img.h, 0, GL_RGB, GL_UNSIGNED_BYTE, img.imagedata);
-            glGenerateMipmap(GL_TEXTURE_2D);
+        if (img.imagedata)
+        {
+            if (img.ch == 4) {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.w, img.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, img.imagedata);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
+            else if (img.ch == 3) {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.w, img.h, 0, GL_RGB, GL_UNSIGNED_BYTE, img.imagedata);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
         }
-        else {
+        else
+        {
             std::cout << "Failed to load texture" << std::endl;
         }
     }
-
     mShader.use();
-    mShader.setInt("texture", 0);
+    mShader.setInt("texture1", 0);
+
+    camSystem = gLimeEngine.mSystemManager->getSystem<CameraSystem>();
 
     // do the event callback registration
     gLimeEngine.addEventListener(EventID::E_GRAPHICS_DEBUG_TOGGLE, [this](Event& e) {this->onEvent(e); });
@@ -72,34 +81,62 @@ void SpriteSystem::init(){
 
 void SpriteSystem::update(){
 
-    // get camera transform somehow 
-    // fire view matrix changes fire event 
-
-    // shader different for minimap 
-    // shader differetnt for gamearea
-
     //TODO 
     // for all entities draw array and send transform 
     for (auto& entity : mEntities) {
-        mShader.use();
+
+
         auto& spriteComponent = gLimeEngine.getComponent<SpriteComponent>(entity);
         auto& transformComponent = gLimeEngine.getComponent<TransformComponent>(entity);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, spriteComponent.texid);
+        
+        for (auto& camEntity : camSystem->mEntities) {
 
-        int mode = mDebugDraw ? 1 : 0;
-        mShader.setInt("mode", mode);
-
-        for (auto&camEntity : camSystem->mEntities) {
             auto& cam = gLimeEngine.getComponent<CameraComponent>(camEntity);
-            //glViewport(cam.x, cam.y, cam.width, cam.height);
-            glViewport(0, 0, SCREEN_HEIGHT, SCREEN_HEIGHT);
-            mShader.setMat4("transform", transformComponent.matrix);
-            mShader.setMat4("projection", cam.projmat);
-            mShader.setMat4("view", cam.viewmat);
-            glBindVertexArray(mVAO);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            auto& camTx = gLimeEngine.getComponent<TransformComponent>(camEntity);
+
+
+            if (cam.activated) {
+                mShader.use();
+                mShader.setMat4("transform", transformComponent.matrix);
+                mShader.setMat4("projection", glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f));
+                //mShader.setMat4("projection", glm::ortho((float)0, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, (float)0,(float)0.1, (float)100));
+                mShader.setMat4("view", cam.viewmat);
+
+                glViewport(cam.x, cam.y, cam.width, cam.height);
+                //glScissor(cam.x, cam.y, cam.width, cam.height);
+                //glEnable(GL_SCISSOR_TEST);
+
+                glm::vec4 color = rgba255((unsigned int)cam.clearcolor.r, (unsigned int)cam.clearcolor.g, (unsigned int)cam.clearcolor.b, (unsigned int)cam.clearcolor.a);
+                glClearColor(color.x, color.y, color.z, color.w);
+
+                // bind textures on corresponding texture units
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, spriteComponent.texid);
+
+                int mode = 0;
+                mShader.setInt("mode", mode);
+                // render container
+                glBindVertexArray(VAO);
+                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+                mode = mDebugDraw ? 1 : 0;
+                mShader.setInt("mode", mode);
+
+
+                if (mode) {
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                    // render container
+                    glBindVertexArray(VAO);
+                    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                }
+                // render container
+                //glBindVertexArray(VAO);
+                //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+            }
         }
     }
 }
@@ -107,9 +144,5 @@ void SpriteSystem::update(){
 void SpriteSystem::onEvent(Event& e){
     if (e.getType() == EventID::E_GRAPHICS_DEBUG_TOGGLE) {
         mDebugDraw = !mDebugDraw;
-        LM_INFO("DebugDraw Toggle");
     }
-    //if (e.getType() == EventID::E_GRAPHICS_CAMERA_UPDATED) {
-    //    auto camID = e.getParam<EntityID>(EventID::P_GRAPHICS_CAMERA_UPDATED_ENTITYID);
-    //}
 }

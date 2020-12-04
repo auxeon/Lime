@@ -2,6 +2,7 @@
 #define TRANSFORMCOMPONENT_HPP
 #include "Pch.hpp"
 #include "glm/glm.hpp"
+#include "glm/gtx/transform.hpp"
 class TransformComponent {
 public:
 	glm::vec3 position;
@@ -9,11 +10,16 @@ public:
 };
 
 
-//class drawspriteCompoent {
-//
-//	vertex buffer id
-//	texid
-//	modelmatrix 
-//
-//};
+// TRANSFORM COMPONENT SERDE
+inline void to_json(ordered_json& j, const TransformComponent& x) {
+    to_json(j["position"], x.position);
+    to_json(j["matrix"], x.matrix);
+}
+
+inline void from_json(const ordered_json& j, TransformComponent& x) {
+    from_json(j["position"], x.position);
+    from_json(j["matrix"], x.matrix);
+    x.matrix = glm::translate(x.matrix, x.position);
+}
+
 #endif
