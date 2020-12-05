@@ -45,8 +45,8 @@ void orthoInitCamera(CameraComponent& cam, float left, float right, float bottom
 	cam.viewmat = glm::mat4(1.0f);
 	cam.x = 0;
 	cam.y = 0;
-	cam.height = SCREEN_HEIGHT/2;
-	cam.width = SCREEN_WIDTH/2;
+	cam.height = SCREEN_HEIGHT;
+	cam.width = SCREEN_WIDTH;
 }
 
 void orthoSetProjection(CameraComponent& cam, float left, float right, float bottom, float top) {
@@ -55,6 +55,7 @@ void orthoSetProjection(CameraComponent& cam, float left, float right, float bot
 
 void orthoUpdateView(CameraComponent& cam, TransformComponent& txfm) {
 	cam.viewmat = glm::lookAt(txfm.position, txfm.position + cam.lookat, cam.up);
+	//glm::lookAt()
 }
 
 #endif // !MATHHELPERS_HPP

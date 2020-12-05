@@ -82,114 +82,44 @@ public:
 		// will add this into the level json later 
 		loadResource(gridmap, "Lime/maps/map_00.json");
 
-		//for (int i = 0; i < gridmap.rows; ++i) {
-		//	for (int j = 0; j < gridmap.cols; ++j) {
-		//		std::cout << gridmap.cells[i][j].data << "";
-		//	}
-		//	std::cout << std::endl;
-		//}
-
-		for (int i = 0; i < gridmap.rows; ++i) {
+		for (int i = 0; i < gridmap.rows ; ++i) {
 			for (int j = 0; j < gridmap.cols; ++j) {
+				std::cout << gridmap.cells[i][j].data << "";
 				if (gridmap.cells[i][j].data == 1) {
-
+					EntityID wall = createEntity();
+					const int blocksize = 20;
+					addComponent(wall, TransformComponent{
+						glm::vec3{j * blocksize, (gridmap.rows-i-1) * blocksize,1.0f},
+						glm::vec3{blocksize,blocksize,1.0f},
+						glm::translate(glm::mat4(1.0f),glm::vec3{j*blocksize,(gridmap.rows-i-1)*blocksize,1.0f})
+					});
+					addComponent(wall, SpriteComponent{
+						"Lime/res/grass.png",
+						(GLuint)0,
+						false,
+						0.0f,
+						1,
+						1
+					});
 				}
 			}
 			std::cout << std::endl;
 		}
 
+		//for (int i = 0; i < gridmap.rows; ++i) {
+		//	for (int j = 0; j < gridmap.cols; ++j) {
+		//		if (gridmap.cells[i][j].data == 1) {
+
+		//		}
+		//	}
+		//	std::cout << std::endl;
+		//}
+
 
 
 		LM_CORE_INFO("MAP LOADED !");
 
-		//EntityID box = createEntity();
-		//addComponent<TransformComponent>(box, TransformComponent{
-		//	glm::vec3{-1.0f,-3.0f,0.0f},
-		//	glm::mat4{1.0f}
-		//});
-		//addComponent<SpriteComponent>(box, SpriteComponent{
-		//	"Lime/res/gear.png",
-		//	0,
-		//	false,
-		//	0.0f,
-		//	1,
-		//	1
-		//});
 
-		//EntityID box2 = createEntity();
-		//addComponent<TransformComponent>(box2, TransformComponent{
-		//	glm::vec3{1.0f,13.0f,0.0f},
-		//	glm::mat4{1.0f}
-		//	});
-		//addComponent<SpriteComponent>(box2, SpriteComponent{
-		//	"Lime/res/gear.png",
-		//	0,
-		//	false,
-		//	0.0f,
-		//	1,
-		//	1
-		//	});
-
-		//EntityID camera = createEntity();
-		//addComponent<TransformComponent>(camera, TransformComponent{
-		//	glm::vec3{0.0f,0.0f,20.0f},
-		//	glm::mat4{1.0f}
-		//});
-		//addComponent<CameraComponent>(camera, CameraComponent{
-		//	glm::vec3{0.0f,0.0f,-1.0f},
-		//	glm::vec3{0.0f,1.0f,0.0f},
-		//	glm::vec3{1.0f,0.0f,0.0f},
-		//	glm::vec3{0.0f,1.0f,0.0f},
-		//	glm::mat4(1.0f),
-		//	glm::mat4(1.0f),
-		//	float {1.0f},
-		//	float {1.0f},
-		//	float {0.0f},
-		//	float {-90.0f},
-		//	float {1.0f},
-		//	int {0},
-		//	int {0},
-		//	int {400},
-		//	int {400},
-		//	bool {true},
-		//	glm::vec4{20,174,96,255}
-		//});
-
-		/*
-		addComponent<ControllerComponent>(box,ControllerComponent{
-			SDL_SCANCODE_I,
-			SDL_SCANCODE_K,
-			SDL_SCANCODE_J,
-			SDL_SCANCODE_L,
-			SDL_SCANCODE_P,
-			SDL_SCANCODE_U,
-			SDL_SCANCODE_O,
-			glm::vec3{1.0f,1.0f,1.0f}
-		});
-
-		EntityID box2 = createEntity();
-		addComponent<TransformComponent>(box2, TransformComponent{
-			glm::vec3{-1.0f,-1.0f,0.0f},
-			glm::mat4{1.0f}
-			});
-		addComponent<SpriteComponent>(box2, SpriteComponent{
-			"Lime/res/gear.png",
-			0,
-			false,
-			0.0f,
-			1,
-			1
-			});
-		addComponent<ControllerComponent>(box2, ControllerComponent{
-			SDL_SCANCODE_I,
-			SDL_SCANCODE_K,
-			SDL_SCANCODE_J,
-			SDL_SCANCODE_L,
-			SDL_SCANCODE_P,
-			SDL_SCANCODE_U,
-			SDL_SCANCODE_O,
-			glm::vec3{1.0f,1.0f,1.0f}
-			});*/
 
 	}
 	// save
@@ -291,9 +221,9 @@ public:
 
 		addEventListener(EventID::E_TIMED_EVENT, [this](Event& e) {this->onTimedEvent(e); });
 		
-		Event timedevent1(EventID::E_TIMED_EVENT);
-		timedevent1.setParam<string>(EventID::P_TIMED_EVENT_DATA, "TEMPORAL MESSAGE TRIGGERED");
-		mEventManager->sendTimedEvent(timedevent1, 2000);
+		//Event timedevent1(EventID::E_TIMED_EVENT);
+		//timedevent1.setParam<string>(EventID::P_TIMED_EVENT_DATA, "TEMPORAL MESSAGE TRIGGERED");
+		//mEventManager->sendTimedEvent(timedevent1, 2000);
 
 
 	}
@@ -584,6 +514,95 @@ inline void sdlPoll() {
 	}
 
 }
+
+//EntityID box = createEntity();
+//addComponent<TransformComponent>(box, TransformComponent{
+//	glm::vec3{-1.0f,-3.0f,0.0f},
+//	glm::mat4{1.0f}
+//});
+//addComponent<SpriteComponent>(box, SpriteComponent{
+//	"Lime/res/gear.png",
+//	0,
+//	false,
+//	0.0f,
+//	1,
+//	1
+//});
+
+//EntityID box2 = createEntity();
+//addComponent<TransformComponent>(box2, TransformComponent{
+//	glm::vec3{1.0f,13.0f,0.0f},
+//	glm::mat4{1.0f}
+//	});
+//addComponent<SpriteComponent>(box2, SpriteComponent{
+//	"Lime/res/gear.png",
+//	0,
+//	false,
+//	0.0f,
+//	1,
+//	1
+//	});
+
+//EntityID camera = createEntity();
+//addComponent<TransformComponent>(camera, TransformComponent{
+//	glm::vec3{0.0f,0.0f,20.0f},
+//	glm::mat4{1.0f}
+//});
+//addComponent<CameraComponent>(camera, CameraComponent{
+//	glm::vec3{0.0f,0.0f,-1.0f},
+//	glm::vec3{0.0f,1.0f,0.0f},
+//	glm::vec3{1.0f,0.0f,0.0f},
+//	glm::vec3{0.0f,1.0f,0.0f},
+//	glm::mat4(1.0f),
+//	glm::mat4(1.0f),
+//	float {1.0f},
+//	float {1.0f},
+//	float {0.0f},
+//	float {-90.0f},
+//	float {1.0f},
+//	int {0},
+//	int {0},
+//	int {400},
+//	int {400},
+//	bool {true},
+//	glm::vec4{20,174,96,255}
+//});
+
+/*
+addComponent<ControllerComponent>(box,ControllerComponent{
+	SDL_SCANCODE_I,
+	SDL_SCANCODE_K,
+	SDL_SCANCODE_J,
+	SDL_SCANCODE_L,
+	SDL_SCANCODE_P,
+	SDL_SCANCODE_U,
+	SDL_SCANCODE_O,
+	glm::vec3{1.0f,1.0f,1.0f}
+});
+
+EntityID box2 = createEntity();
+addComponent<TransformComponent>(box2, TransformComponent{
+	glm::vec3{-1.0f,-1.0f,0.0f},
+	glm::mat4{1.0f}
+	});
+addComponent<SpriteComponent>(box2, SpriteComponent{
+	"Lime/res/gear.png",
+	0,
+	false,
+	0.0f,
+	1,
+	1
+	});
+addComponent<ControllerComponent>(box2, ControllerComponent{
+	SDL_SCANCODE_I,
+	SDL_SCANCODE_K,
+	SDL_SCANCODE_J,
+	SDL_SCANCODE_L,
+	SDL_SCANCODE_P,
+	SDL_SCANCODE_U,
+	SDL_SCANCODE_O,
+	glm::vec3{1.0f,1.0f,1.0f}
+	});*/
 
 
 #endif

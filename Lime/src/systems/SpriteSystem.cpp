@@ -98,14 +98,16 @@ void SpriteSystem::update(){
 
             if (cam.activated) {
                 mShader.use();
-                mShader.setMat4("transform", transformComponent.matrix);
-                mShader.setMat4("projection", glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f));
-                //mShader.setMat4("projection", glm::ortho((float)0, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, (float)0,(float)0.1, (float)100));
-                mShader.setMat4("view", cam.viewmat);
-
+                mShader.setMat4("transform", glm::scale(transformComponent.matrix, transformComponent.size));
+                //mShader.setMat4("projection", glm::perspective(glm::radians(90.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, -100.0f, 100.0f));
+                //glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, -1.0f, 1.0f);
+                mShader.setMat4("projection", glm::ortho((float)0, (float)SCREEN_WIDTH, (float)0, (float)SCREEN_HEIGHT, -1.0f, 1.0f));
+                //mShader.setMat4("projection", cam.projmat);
+                //mShader.setMat4("view", glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
+                mShader.setMat4("view",cam.viewmat);
                 glViewport(cam.x, cam.y, cam.width, cam.height);
-                //glScissor(cam.x, cam.y, cam.width, cam.height);
-                //glEnable(GL_SCISSOR_TEST);
+                glScissor(cam.x, cam.y, cam.width, cam.height);
+                glEnable(GL_SCISSOR_TEST);
 
                 glm::vec4 color = rgba255((unsigned int)cam.clearcolor.r, (unsigned int)cam.clearcolor.g, (unsigned int)cam.clearcolor.b, (unsigned int)cam.clearcolor.a);
                 glClearColor(color.x, color.y, color.z, color.w);

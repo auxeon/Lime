@@ -22,6 +22,7 @@ void CameraSystem::init(){
 		auto& ctrl = gLimeEngine.getComponent<cp>(entity);
 		auto& txfm = gLimeEngine.getComponent<tf>(entity);
 		auto& cam = gLimeEngine.getComponent<cm>(entity);
+		orthoInitCamera(cam, 0, cam.width, cam.height, 0);
 	}
 	// register the call backs 
 	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });

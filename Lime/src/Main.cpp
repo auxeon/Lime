@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
 		fpsCounter();
 	}
 	au.Shutdown();
-	gLimeEngine.save("Lime/level1.json");
+	//gLimeEngine.save("Lime/level1.json");
 	system("pause");
 
 	return 0;
