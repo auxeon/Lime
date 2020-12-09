@@ -15,10 +15,8 @@ void ControllerSystem::init(){
 }
 
 void ControllerSystem::update(){
-	for (auto entity : mEntities) {
-		auto& transformComponent = gLimeEngine.getComponent<tf>(entity);
-		transformComponent.matrix = glm::translate(glm::mat4(1.0f), transformComponent.position);
-	}
+
+
 }
 
 void ControllerSystem::onEvent(Event& e){
@@ -30,53 +28,54 @@ void ControllerSystem::onEvent(Event& e){
 
 			auto& controllerComponent = gLimeEngine.getComponent<cp>(entity);
 			auto& transformComponent = gLimeEngine.getComponent<tf>(entity);
-			//if(!gLimeEngine.hasComponent<CameraComponent>(entity))
-				//std::cout << "Entity position (x,y) : (" << transformComponent.position.x << ", " << transformComponent.position.y << " )\n-------------------------------------------------\n"<< std::endl;
 
-			if (controllerComponent.UP == button) {
-				//transformComponent.matrix = glm::translate(transformComponent.matrix, glm::vec3(0.0f, controllerComponent.STEP.y, 0.0f));
-				transformComponent.position += glm::vec3(0.0f, controllerComponent.STEP.y, 0.0f);
-				LM_INFO("[Entity ID: {}] UP", entity);
-			}
+			if (e.getType() == EventID::E_WINDOW_KEY_PRESSED) {
 
-			if (controllerComponent.DOWN == button) {
-				//transformComponent.matrix = glm::translate(transformComponent.matrix, glm::vec3(0.0f, -controllerComponent.STEP.y, 0.0f));
-				transformComponent.position += glm::vec3(0.0f, -controllerComponent.STEP.y, 0.0f);
-				LM_INFO("[Entity ID: {}] DOWN", entity);
-			}
 
-			if (controllerComponent.LEFT == button) {
-				//transformComponent.matrix = glm::translate(transformComponent.matrix, glm::vec3(-controllerComponent.STEP.x, 0.0f, 0.0f));
-				transformComponent.position += glm::vec3(-controllerComponent.STEP.x, 0.0f, 0.0f);
-				LM_INFO("[Entity ID: {}] LEFT", entity);
-			}
+				if (controllerComponent.UP == button) {
+					transformComponent.position += glm::vec3(0.0f, controllerComponent.STEP.y, 0.0f);
+					LM_INFO("[Entity ID: {}] UP", entity);
+				}
 
-			if (controllerComponent.RIGHT == button) {
-				//transformComponent.matrix = glm::translate(transformComponent.matrix, glm::vec3(controllerComponent.STEP.x, 0.0f, 0.0f));
-				transformComponent.position += glm::vec3(controllerComponent.STEP.x, 0.0f, 0.0f);
-				LM_INFO("[Entity ID: {}] RIGHT", entity);
-			}
+				if (controllerComponent.DOWN == button) {
 
-			if (controllerComponent.ROTLEFT == button) {
-				transformComponent.matrix = glm::rotate(transformComponent.matrix, glm::radians(controllerComponent.STEP.z*5), glm::vec3(0.0f, 0.0f, 1.0f));
-				LM_INFO("[Entity ID: {}] ROTATE LEFT", entity);
-			}
+					transformComponent.position += glm::vec3(0.0f, -controllerComponent.STEP.y, 0.0f);
+					LM_INFO("[Entity ID: {}] DOWN", entity);
+				}
 
-			if (controllerComponent.ROTRIGHT == button) {
-				transformComponent.matrix = glm::rotate(transformComponent.matrix, glm::radians(-controllerComponent.STEP.z*5), glm::vec3(0.0f, 0.0f, 1.0f));
-				LM_INFO("[Entity ID: {}] ROTATE RIGHT", entity);
-			}
+				if (controllerComponent.LEFT == button) {
+					transformComponent.position += glm::vec3(-controllerComponent.STEP.x, 0.0f, 0.0f);
+					LM_INFO("[Entity ID: {}] LEFT", entity);
+				}
 
-			if (controllerComponent.ACTION01 == button) {
-				Event edebug(EventID::E_GRAPHICS_DEBUG_TOGGLE);
-				gLimeEngine.sendEvent(edebug);
-			}
+				if (controllerComponent.RIGHT == button) {
+					transformComponent.position += glm::vec3(controllerComponent.STEP.x, 0.0f, 0.0f);
+					LM_INFO("[Entity ID: {}] RIGHT", entity);
+				}
 
-			if (controllerComponent.ACTION02 == button) {
-				Event espeak(EventID::E_DM_EVENT);
-				espeak.setParam<EntityID>(EventID::P_DM_EVENT_ENTITYID,entity);
-				espeak.setParam<string>(EventID::P_DM_EVENT_DATA,controllerComponent.SPEAK);
-				gLimeEngine.sendEvent(espeak);
+				if (controllerComponent.ROTLEFT == button) {
+					transformComponent.rotation.z += controllerComponent.STEP.z;
+					LM_INFO("[Entity ID: {}] ROTATE LEFT", entity);
+				}
+
+				if (controllerComponent.ROTRIGHT == button) {
+					transformComponent.rotation.z += -controllerComponent.STEP.z;
+					LM_INFO("[Entity ID: {}] ROTATE RIGHT", entity);
+				}
+
+				if (controllerComponent.ACTION01 == button) {
+					Event edebug(EventID::E_GRAPHICS_DEBUG_TOGGLE);
+					gLimeEngine.sendEvent(edebug);
+				}
+
+				if (controllerComponent.ACTION02 == button) {
+					Event espeak(EventID::E_DM_EVENT);
+					espeak.setParam<EntityID>(EventID::P_DM_EVENT_ENTITYID, entity);
+					espeak.setParam<string>(EventID::P_DM_EVENT_DATA, controllerComponent.SPEAK);
+					gLimeEngine.sendEvent(espeak);
+				}
+
+
 			}
 		}
 	}

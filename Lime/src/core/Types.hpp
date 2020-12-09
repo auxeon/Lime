@@ -35,7 +35,7 @@ inline glm::vec4 rgba255(unsigned int r = 0, unsigned int g = 0, unsigned int b 
 // defines
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
-#define FPS 120
+#define FPS 5
 #define MAX_TITLE_LEN 80
 
 

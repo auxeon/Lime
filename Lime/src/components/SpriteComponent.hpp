@@ -1,7 +1,6 @@
 #ifndef SPRITECOMPONENT_HPP
 #define SPRITECOMPONENT_HPP
 #include "Pch.hpp"
-#include "glad/glad.h"
 class SpriteComponent {
 public:
 	string sprite;

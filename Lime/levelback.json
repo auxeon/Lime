@@ -11,7 +11,7 @@
                 "size" :{
                     "x" : 40.0,
                     "y" : 60.0,
-                    "z" : 3.0
+                    "z" : 0.0
                 },
                 "matrix": [
                     [
@@ -61,9 +61,9 @@
                 "ROTLEFT": "SDL_SCANCODE_U",
                 "ROTRIGHT": "SDL_SCANCODE_O",
                 "STEP": {
-                    "x": 10.0,
-                    "y": 10.0,
-                    "z": 10.0
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "SPEAK": "./Lime/res/youredead_kakashi.mp3"
             },
@@ -88,7 +88,7 @@
                 "size" :{
                     "x" : 40.0,
                     "y" : 40.0,
-                    "z" : 3.0
+                    "z" : 0.0
                 },
                 "matrix": [
                     [
@@ -138,9 +138,9 @@
                 "ROTLEFT": "SDL_SCANCODE_Q",
                 "ROTRIGHT": "SDL_SCANCODE_E",
                 "STEP": {
-                    "x": 10.0,
-                    "y": 10.0,
-                    "z": 10.0
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "SPEAK": "./Lime/res/kamehameha_goku.mp3"
             },
@@ -160,7 +160,7 @@
                 "position": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": 1.0
+                    "z": 5.0
                 },
                 "size" :{
                     "x" : 1,

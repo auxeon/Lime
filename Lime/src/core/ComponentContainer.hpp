@@ -41,6 +41,7 @@ public:
 		mIndexToEntityMap.erase(indexOfLastElement);
 
 		--mCount;
+
 	}
 
 	T& getData(EntityID entity){

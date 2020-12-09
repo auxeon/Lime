@@ -22,7 +22,7 @@ void CameraSystem::init(){
 		auto& ctrl = gLimeEngine.getComponent<cp>(entity);
 		auto& txfm = gLimeEngine.getComponent<tf>(entity);
 		auto& cam = gLimeEngine.getComponent<cm>(entity);
-		orthoInitCamera(cam, 0, cam.width, cam.height, 0);
+		orthoInitCamera(cam, 0, cam.width, 0, cam.height);
 	}
 	// register the call backs 
 	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
@@ -33,10 +33,17 @@ void CameraSystem::init(){
 void CameraSystem::update(){
 	//update for all the camera components the current 
 	for (auto& entity : mEntities) {
-		auto& ctrl = gLimeEngine.getComponent<cp>(entity);
+
 		auto& txfm = gLimeEngine.getComponent<tf>(entity);
 		auto& cam = gLimeEngine.getComponent<cm>(entity);
 		orthoUpdateView(cam, txfm);
+
+		glViewport(cam.x, cam.y, cam.width, cam.height);
+		glScissor(cam.x, cam.y, cam.width, cam.height);
+		glEnable(GL_SCISSOR_TEST);
+
+		glm::vec4 color = rgba255((unsigned int)cam.clearcolor.r, (unsigned int)cam.clearcolor.g, (unsigned int)cam.clearcolor.b, (unsigned int)cam.clearcolor.a);
+		//glClearColor(color.x, color.y, color.z, color.w);
 	}
 }
 
@@ -79,7 +86,8 @@ void CameraSystem::onEvent(Event& e){
 			auto& cam = gLimeEngine.getComponent<cm>(entity);
 			cam.width = w;
 			cam.height = h;
-			orthoSetProjection(cam, -w / h * cam.zoom, w / h * cam.zoom, -cam.zoom, cam.zoom);
+			//orthoSetProjection(cam, -w / h * cam.zoom, w / h * cam.zoom, -cam.zoom, cam.zoom);
+			orthoSetProjection(cam, 0, w, 0, h);
 		}
 	}
 }

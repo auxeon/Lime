@@ -13,30 +13,30 @@
 class GraphicsManager {
 public:
 	void init() {
-		renderer.init();
+		gfx.init();
 	}
 	void update() {
-		renderer.update();
+		gfx.update();
 	}
 	void onEvent(Event& e) {
-		renderer.onEvent(e);
+		gfx.onEvent(e);
 	}
 	void resize(unsigned int w, unsigned int h) {
-		renderer.resize(w, h);
+		gfx.resize(w, h);
 	}
 	string getWindowTitle() {
-		return renderer.getWindowTitle();
+		return gfx.getWindowTitle();
 	}
 	void setWindowTitle(string s) {
-		renderer.setWindowTitle(s);
+		gfx.setWindowTitle(s);
 	}
 	void printInfo() {
-		renderer.printInfo();
+		gfx.printInfo();
 	}
 	
 //private:
 public:
-	Graphics renderer;
+	Graphics gfx;
 };
 
 #endif GRAPHICSMANAGER_HPP

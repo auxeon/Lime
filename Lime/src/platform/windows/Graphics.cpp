@@ -57,7 +57,7 @@ void Graphics::init() {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
 
 	// setting the core profile doesn't allow us to use older deprecated functions 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 
 	// creating the main sdl opengl context now
 	mOpenGLContext = SDL_GL_CreateContext(mWindow.get());
@@ -69,13 +69,21 @@ void Graphics::init() {
 #endif
 
 		glEnable(GL_BLEND);
+		//glEnable(GL_DEPTH_TEST);
+		//glDepthMask(GL_FALSE);
+		//glDepthFunc(GL_LESS);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glBlendEquation(GL_FUNC_ADD);
 }
 void Graphics::update() {
+
+
+
 	SDL_GL_SwapWindow(mWindow.get());
 	glViewport(0, 0, mScreenWidth, mScreenHeight);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 
 }
 void Graphics::resize(unsigned int w, unsigned int h) {
@@ -114,3 +122,97 @@ void Graphics::onEvent(Event& e){
 
 }
 
+void Graphics::initTextureData(GLuint& texid, string filepath) {
+	glGenTextures(1, &texid);
+	glBindTexture(GL_TEXTURE_2D, texid);
+	// set the texture wrapping parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// load image, create texture and generate mipmaps
+	auto& img = gLimeEngine.getOrLoadResource<Image>(filepath);
+	if (img.imagedata) {
+		if (img.ch == 4) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.w, img.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, img.imagedata);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else if (img.ch == 3) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.w, img.h, 0, GL_RGB, GL_UNSIGNED_BYTE, img.imagedata);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+	}
+	else {
+		LM_CORE_ERROR("Failed to load texture");
+	}
+	// unbind texture
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Graphics::bindTextureData(GLuint texid) {
+	glBindTexture(GL_TEXTURE_2D, texid);
+}
+
+void Graphics::initRenderData(Shader& shader, float* vertexbuffer, unsigned int buffersize, unsigned int& vao, bool wireframe) {
+
+	mShader = shader;
+
+	unsigned int vbo;
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
+
+	// bind the vertex array
+	glBindVertexArray(vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, buffersize, vertexbuffer, GL_STATIC_DRAW);
+
+
+	//textured
+	if (!wireframe) {
+		// position attribute
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		// color attribute
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		
+		// texture coord attribute
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+	}
+
+	// color only
+	else {
+		// position attribute
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		// color attribute
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+	}
+	// reset back to defaults unbind
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void Graphics::drawRenderData(unsigned int vao, glm::mat4 model, glm::vec3 size, unsigned int numvertices, bool wireframe,GLuint texid, int style) {
+	mShader.use();
+	mShader.setMat4("transform", model);
+	mShader.setBool("mode", wireframe);
+
+	// draw texture
+	if (!wireframe) {
+		glActiveTexture(GL_TEXTURE0);
+		bindTextureData(texid);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	// draw wireframe
+	else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	glBindVertexArray(vao);
+	glDrawArrays(style, 0, numvertices);
+	glBindVertexArray(0);
+}

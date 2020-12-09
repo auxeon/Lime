@@ -13,19 +13,19 @@ public:
 	void update() override;
 	void onEvent(Event& e) override;
 private:
-    float vertices[32] = {
+
+    float vertices[48] = {
         // positions           // colors            // texture coords
-         1.0f,  1.0f, 0.0f,    0.0f, 1.0f, 1.0f,    1.0f, 1.0f, // top right [1,1]
-         1.0f,  0.0f, 0.0f,    0.0f, 1.0f, 1.0f,    1.0f, 0.0f, // bottom right [1,0]
-         0.0f,  0.0f, 0.0f,    0.0f, 1.0f, 1.0f,    0.0f, 0.0f, // bottom left [0,0]
-         0.0f,  1.0f, 0.0f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f  // top left [0,1]
-    };
-    unsigned int indices[6] = {
-        0, 1, 2, // first triangle
-        2, 3, 0  // second triangle
+         1.0f,  1.0f, 0.0f,    0.0f, 1.0f, 1.0f,    1.0f, 1.0f, // top right [1,1] 0
+         1.0f,  0.0f, 0.0f,    0.0f, 1.0f, 1.0f,    1.0f, 0.0f, // bottom right [1,0] 1
+         0.0f,  0.0f, 0.0f,    0.0f, 1.0f, 1.0f,    0.0f, 0.0f, // bottom left [0,0] 2
+       
+         0.0f,  0.0f, 0.0f,    0.0f, 1.0f, 1.0f,    0.0f, 0.0f, // bottom left [0,0] 2
+         0.0f,  1.0f, 0.0f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f,  // top left [0,1] 3
+         1.0f,  1.0f, 0.0f,    0.0f, 1.0f, 1.0f,    1.0f, 1.0f // top right [1,1] 0
     };
 
-    unsigned int VBO, VAO, EBO;
+    unsigned int mVAO;
     Shader mShader;
     bool mDebugDraw=false;
 

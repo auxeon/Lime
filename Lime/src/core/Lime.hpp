@@ -7,11 +7,16 @@
 #include "components/PlayerComponent.hpp"
 #include "components/SpriteComponent.hpp"
 #include "components/TransformComponent.hpp"
+#include "components/RigidBody2DComponent.hpp"
+#include "components/RenderBoxComponent.hpp"
 #include "systems/ControllerSystem.hpp"
 #include "systems/CameraSystem.hpp"
 #include "systems/SpriteSystem.hpp"
 #include "systems/BroadcastSystem.hpp"
 #include "systems/DMSystem.hpp"
+#include "systems/PhysicsSystem.hpp"
+#include "systems/TransformSystem.hpp"
+#include "systems/RenderSystem.hpp"
 #include "ComponentManager.hpp"
 #include "EntityManager.hpp"
 #include "EventManager.hpp"
@@ -42,6 +47,8 @@ public:
 		serializeComponent<ControllerComponent>(j["ControllerComponent"], entity);
 		serializeComponent<SpriteComponent>(j["SpriteComponent"], entity);
 		serializeComponent<CameraComponent>(j["CameraComponent"], entity);
+		serializeComponent<RigidBody2DComponent>(j["RigidBody2DComponent"], entity);
+		serializeComponent<RenderBoxComponent>(j["RenderBoxComponent"], entity);
 
 	}
 
@@ -63,6 +70,8 @@ public:
 		deserializeComponent<ControllerComponent>(j["ControllerComponent"], entity);
 		deserializeComponent<SpriteComponent>(j["SpriteComponent"], entity);
 		deserializeComponent<CameraComponent>(j["CameraComponent"], entity);
+		deserializeComponent<RigidBody2DComponent>(j["RigidBody2DComponent"], entity);
+		deserializeComponent<RenderBoxComponent>(j["RenderBoxComponent"], entity);
 	}
 
 	// load 
@@ -88,10 +97,12 @@ public:
 				if (gridmap.cells[i][j].data == 1) {
 					EntityID wall = createEntity();
 					const int blocksize = 20;
+					float x = (float)j * blocksize;
+					float y = (float)(gridmap.rows - i - 1) * blocksize;
 					addComponent(wall, TransformComponent{
-						glm::vec3{j * blocksize, (gridmap.rows-i-1) * blocksize,1.0f},
-						glm::vec3{blocksize,blocksize,1.0f},
-						glm::translate(glm::mat4(1.0f),glm::vec3{j*blocksize,(gridmap.rows-i-1)*blocksize,1.0f})
+						glm::vec3{x, y,1.0f}, // position 
+						glm::vec3{0.0f,0.0f,0.0f}, // rotation
+						glm::vec3{blocksize,blocksize,1.0f}, // size
 					});
 					addComponent(wall, SpriteComponent{
 						"Lime/res/grass.png",
@@ -161,7 +172,7 @@ public:
 		dt = 0.0;
 		
 		// set defaults 
-		setMaxFPS(60);
+		setMaxFPS(FPS);
 
 		// call init methods of managers
 		mInputManager->init();
@@ -174,6 +185,8 @@ public:
 		registerComponent<SpriteComponent>();
 		registerComponent<CameraComponent>();
 		registerComponent<PlayerComponent>();
+		registerComponent<RigidBody2DComponent>();
+		registerComponent<RenderBoxComponent>();
 
 		// register system and set its signature 
 		registerSystem<ControllerSystem>();
@@ -181,6 +194,9 @@ public:
 		registerSystem<CameraSystem>();
 		registerSystem<BroadcastSystem>();
 		registerSystem<DMSystem>();
+		registerSystem<PhysicsSystem>();
+		registerSystem<TransformSystem>();
+		registerSystem<RenderSystem>();
 
 		// Controller System
 		{
@@ -218,6 +234,31 @@ public:
 			atype.set(getComponentType<TransformComponent>());
 			setSystemArchetype<DMSystem>(atype);
 		}
+
+		// Physics System
+		{
+			Archetype atype;
+			atype.set(getComponentType<TransformComponent>());
+			atype.set(getComponentType<RigidBody2DComponent>());
+			atype.set(getComponentType<RenderBoxComponent>());
+			setSystemArchetype<PhysicsSystem>(atype);
+		}
+
+		// Transform System
+		{
+			Archetype atype;
+			atype.set(getComponentType<TransformComponent>());
+			setSystemArchetype<TransformSystem>(atype);
+		}
+
+		// Render System
+		{
+			Archetype atype;
+			atype.set(getComponentType<TransformComponent>());
+			atype.set(getComponentType<RenderBoxComponent>());
+			setSystemArchetype<RenderSystem>(atype);
+		}
+
 
 		addEventListener(EventID::E_TIMED_EVENT, [this](Event& e) {this->onTimedEvent(e); });
 		
