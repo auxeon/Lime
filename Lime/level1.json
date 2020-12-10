@@ -2,11 +2,14 @@
     "Entities": [
         {
             "EntityID": 0,
+            "TagComponent" : {
+                "tag" : "kakashi"
+            },
             "TransformComponent": {
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.7
+                    "x": 250.0,
+                    "y": 500.0,
+                    "z": 0.0
                 },
                 "rotation" :{
                     "x" : 0.0,
@@ -40,9 +43,9 @@
                 "ROTLEFT": "SDL_SCANCODE_U",
                 "ROTRIGHT": "SDL_SCANCODE_O",
                 "STEP": {
-                    "x": 5.0,
-                    "y": 5.0,
-                    "z": 5.0
+                    "x": 20.0,
+                    "y": 50.0,
+                    "z": 50.0
                 },
                 "SPEAK": "./Lime/res/youredead_kakashi.mp3"
             },
@@ -55,11 +58,53 @@
                 "cols": 1
             },
             "CameraComponent": null,
-            "RigidBody2DComponent" : null,
-            "RenderBoxComponent" : null
+            "RigidBody2DComponent" : {
+                "position": {
+                    "x": 250.0,
+                    "y": 500.0,
+                    "z": 0.7
+                },
+                "rotation" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "size" :{
+                    "x" : 40.0,
+                    "y" : 60.0,
+                    "z" : 0.0
+                },
+                "force" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "torque" : 0.0,
+                "velocity" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "angularVelocity" : 0.0,
+                "friction" : 0.2,
+                "mass" : 50.0,
+                "invMass" : 0.0,
+                "I" : 0.0,
+                "invI" : 0.0
+            },
+            "RenderBoxComponent" : {
+                "color" : {
+                    "x" : 0.0,
+                    "y" : 1.0,
+                    "z" : 0.0
+                }
+            }
         },
         {
             "EntityID": 1,
+            "TagComponent" : {
+                "tag" : "goku"
+            },
             "TransformComponent": {
                 "position": {
                     "x": 0.0,
@@ -113,11 +158,47 @@
                 "cols": 1
             },
             "CameraComponent": null,
-            "RigidBody2DComponent" : null,
+            "RigidBody2DComponent" : {
+                "position": {
+                    "x": 20.0,
+                    "y": 500.0,
+                    "z": 0.0
+                },
+                "rotation" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "size" :{
+                    "x" : 40.0,
+                    "y" : 60.0,
+                    "z" : 0.0
+                },
+                "force" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "torque" : 0.0,
+                "velocity" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "angularVelocity" : 0.0,
+                "friction" : 0.2,
+                "mass" : 200.0,
+                "invMass" : 0.0,
+                "I" : 0.0,
+                "invI" : 0.0
+            },
             "RenderBoxComponent" : null
         },
         {
             "EntityID": 2,
+            "TagComponent" : {
+                "tag" : ""
+            },
             "TransformComponent": {
                 "position": {
                     "x": 400.0,
@@ -160,6 +241,9 @@
         },
         {
             "EntityID": 3,
+            "TagComponent" : {
+                "tag" : "camera"
+            },
             "TransformComponent": {
                 "position": {
                     "x": 0.0,

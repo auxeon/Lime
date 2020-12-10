@@ -9,6 +9,7 @@
 #include "components/TransformComponent.hpp"
 #include "components/RigidBody2DComponent.hpp"
 #include "components/RenderBoxComponent.hpp"
+#include "components/TagComponent.hpp"
 #include "systems/ControllerSystem.hpp"
 #include "systems/CameraSystem.hpp"
 #include "systems/SpriteSystem.hpp"
@@ -42,6 +43,7 @@ public:
 	}
 	inline void serializeEntity(ordered_json& j, const EntityID& entity) {
 		j["EntityID"] = entity;
+		serializeComponent<TagComponent>(j["TagComponent"], entity);
 		serializeComponent<TransformComponent>(j["TransformComponent"], entity);
 		serializeComponent<PlayerComponent>(j["PlayerComponent"], entity);
 		serializeComponent<ControllerComponent>(j["ControllerComponent"], entity);
@@ -65,6 +67,7 @@ public:
 		if (j["EntityID"].is_null() || j["EntityID"] != entity) {
 			j["EntityID"] = entity;
 		}
+		deserializeComponent<TagComponent>(j["TagComponent"], entity);
 		deserializeComponent<TransformComponent>(j["TransformComponent"], entity);
 		deserializeComponent<PlayerComponent>(j["PlayerComponent"], entity);
 		deserializeComponent<ControllerComponent>(j["ControllerComponent"], entity);
@@ -93,16 +96,36 @@ public:
 
 		for (int i = 0; i < gridmap.rows ; ++i) {
 			for (int j = 0; j < gridmap.cols; ++j) {
-				std::cout << gridmap.cells[i][j].data << "";
+				//std::cout << gridmap.cells[i][j].data << "";
 				if (gridmap.cells[i][j].data == 1) {
 					EntityID wall = createEntity();
 					const int blocksize = 20;
-					float x = (float)j * blocksize;
-					float y = (float)(gridmap.rows - i - 1) * blocksize;
+					float x = (float)j * blocksize + blocksize/2;
+					float y = (float)(gridmap.rows - i - 1) * blocksize + blocksize/2;
+					addComponent(wall, TagComponent{
+						"sprite_ground"
+					});
 					addComponent(wall, TransformComponent{
 						glm::vec3{x, y,1.0f}, // position 
 						glm::vec3{0.0f,0.0f,0.0f}, // rotation
 						glm::vec3{blocksize,blocksize,1.0f}, // size
+					});
+					addComponent(wall, RigidBody2DComponent{
+						glm::vec3{x, y,1.0f}, // position 
+						glm::vec3{0.0f,0.0f,0.0f}, // rotation
+						glm::vec3{blocksize,blocksize,1.0f}, // size
+						glm::vec3{0.0f,0.0f,0.0f}, // force 
+						0.0f, // torque
+						glm::vec3{0.0f,0.0f,0.0f}, // velocity
+						0.0f, // angular velocity
+						0.2f, // friction
+						FLT_MAX, // mass
+						0.0f, // invMass
+						0.0f, // I
+						0.0f  // InvI
+					});
+					addComponent(wall, RenderBoxComponent{
+						glm::vec3{0.0f,1.0f,0.0f}
 					});
 					addComponent(wall, SpriteComponent{
 						"Lime/res/grass.png",
@@ -114,19 +137,8 @@ public:
 					});
 				}
 			}
-			std::cout << std::endl;
+			//std::cout << std::endl;
 		}
-
-		//for (int i = 0; i < gridmap.rows; ++i) {
-		//	for (int j = 0; j < gridmap.cols; ++j) {
-		//		if (gridmap.cells[i][j].data == 1) {
-
-		//		}
-		//	}
-		//	std::cout << std::endl;
-		//}
-
-
 
 		LM_CORE_INFO("MAP LOADED !");
 
@@ -187,6 +199,7 @@ public:
 		registerComponent<PlayerComponent>();
 		registerComponent<RigidBody2DComponent>();
 		registerComponent<RenderBoxComponent>();
+		registerComponent<TagComponent>();
 
 		// register system and set its signature 
 		registerSystem<ControllerSystem>();
@@ -238,6 +251,7 @@ public:
 		// Physics System
 		{
 			Archetype atype;
+			atype.set(getComponentType<TagComponent>());
 			atype.set(getComponentType<TransformComponent>());
 			atype.set(getComponentType<RigidBody2DComponent>());
 			atype.set(getComponentType<RenderBoxComponent>());

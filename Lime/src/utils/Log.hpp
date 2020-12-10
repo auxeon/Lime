@@ -59,7 +59,7 @@ private:
 #define LM_WARN(...)
 #define LM_INFO(...)
 #define LM_TRACE(...)
-#define LM_FATAL(...)	
+#define LM_FATAL(...)
 #endif
 
 #endif

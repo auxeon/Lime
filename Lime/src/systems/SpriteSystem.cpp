@@ -54,7 +54,7 @@ void SpriteSystem::update(){
                 mShader.setMat4("view",cam.viewmat);
 
                 gLimeEngine.mGraphicsManager->gfx.mShader = mShader;
-                gLimeEngine.mGraphicsManager->gfx.drawRenderData(mVAO, transformComponent.model, transformComponent.size, 6, false, spriteComponent.texid, GL_TRIANGLES);
+                gLimeEngine.mGraphicsManager->gfx.drawRenderData(mVAO, transformComponent.model, transformComponent.size, 8, false, spriteComponent.texid, GL_TRIANGLES);
                 if (mDebugDraw) {
                     gLimeEngine.mGraphicsManager->gfx.drawRenderData(mVAO, transformComponent.model, transformComponent.size, 6, true, spriteComponent.texid, GL_TRIANGLES);
                 }

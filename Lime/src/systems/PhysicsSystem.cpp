@@ -3,12 +3,12 @@
 #include "core/Lime.hpp"
 #include "glad/glad.h"
 #include "systems/CameraSystem.hpp"
+#include "components/TagComponent.hpp"
 #include "components/SpriteComponent.hpp"
 #include "components/TransformComponent.hpp"
 #include "components/ControllerComponent.hpp"
 #include "components/CameraComponent.hpp"
 #include "glm/gtx/transform.hpp"
-#include "utils/gldirect_draw.hpp"
 
 
 extern Lime gLimeEngine;
@@ -21,43 +21,74 @@ bool PhysicsSystem::positionCorrection = true;
 
 void PhysicsSystem::init(){
 
-	EntityID phyGround = gLimeEngine.createEntity();
-	EntityID phyBox = gLimeEngine.createEntity();
 
 	gravity = glm::vec3{ 0.0f,-10.0f,0.0f };
 	iterations = 10;
 
-	// phyGround 
-	RigidBody2DComponent phyGround_rb;
-	TransformComponent phyGround_tf;
-	RenderBoxComponent phyGround_render;
+	//EntityID phyGround = gLimeEngine.createEntity();
+	//// phyGround 
+	//RigidBody2DComponent phyGround_rb;
+	//TransformComponent phyGround_tf;
+	//RenderBoxComponent phyGround_render;
 
-	set(phyGround_rb, glm::vec3{ 100.0f,20.0f,0.0f }, FLT_MAX);
-	phyGround_rb.position.x = 300.0f;
-	phyGround_rb.position.y = 100.0f;
-	phyGround_render.color = glm::vec3{ 1.0f,1.0f,0.0f };
+	//set(phyGround_rb, glm::vec3{ 100.0f,20.0f,0.0f }, FLT_MAX);
+	//phyGround_rb.position.x = 300.0f;
+	//phyGround_rb.position.y = 200.0f;
+	//phyGround_rb.rotation.x = phyGround_rb.rotation.y = phyGround_rb.rotation.z = 0.0f;
+	//phyGround_render.color = glm::vec3{ 1.0f,1.0f,0.0f };
 
-	
-	phyGround_tf.size.x = phyGround_rb.size.x;
-	phyGround_tf.size.y = phyGround_rb.size.y;
-	phyGround_tf.size.z = 0.0f;
-	phyGround_tf.position.x = phyGround_rb.position.x;
-	phyGround_tf.position.y = phyGround_rb.position.y;
-	phyGround_tf.position.z = 0.0f;
+	//
+	//phyGround_tf.size.x = phyGround_rb.size.x;
+	//phyGround_tf.size.y = phyGround_rb.size.y;
+	//phyGround_tf.size.z = 0.0f;
+	//phyGround_tf.position.x = phyGround_rb.position.x;
+	//phyGround_tf.position.y = phyGround_rb.position.y;
+	//phyGround_tf.rotation = phyGround_rb.rotation;
+	//phyGround_tf.position.z = 0.0f;
 
-	gLimeEngine.addComponent<TransformComponent>(phyGround, phyGround_tf);
-	gLimeEngine.addComponent<RigidBody2DComponent>(phyGround, phyGround_rb);
-	gLimeEngine.addComponent<RenderBoxComponent>(phyGround, phyGround_render);
+	//gLimeEngine.addComponent<TagComponent>(phyGround, TagComponent{
+	//	"ground"
+	//});
+	//gLimeEngine.addComponent<TransformComponent>(phyGround, phyGround_tf);
+	//gLimeEngine.addComponent<RigidBody2DComponent>(phyGround, phyGround_rb);
+	//gLimeEngine.addComponent<RenderBoxComponent>(phyGround, phyGround_render);
 
 
+	////EntityID phyGround = gLimeEngine.createEntity();
+	////// phyGround 
+	////RigidBody2DComponent phyGround_rb;
+	////TransformComponent phyGround_tf;
+	////RenderBoxComponent phyGround_render;
+
+	////set(phyGround_rb, glm::vec3{ 100.0f,20.0f,0.0f }, FLT_MAX);
+	////phyGround_rb.position.x = 300.0f;
+	////phyGround_rb.position.y = 200.0f;
+	////phyGround_render.color = glm::vec3{ 1.0f,1.0f,0.0f };
+
+
+	//////phyGround_tf.size.x = phyGround_rb.size.x;
+	//////phyGround_tf.size.y = phyGround_rb.size.y;
+	//////phyGround_tf.size.z = 0.0f;
+	//////phyGround_tf.position.x = phyGround_rb.position.x;
+	//////phyGround_tf.position.y = phyGround_rb.position.y;
+	//////phyGround_tf.position.z = 0.0f;
+
+	////gLimeEngine.addComponent<TransformComponent>(phyGround, phyGround_tf);
+	////gLimeEngine.addComponent<RigidBody2DComponent>(phyGround, phyGround_rb);
+	////gLimeEngine.addComponent<RenderBoxComponent>(phyGround, phyGround_render);
+
+
+	EntityID phyBox = gLimeEngine.createEntity();
 	// upper phyBox
 	RigidBody2DComponent phyBox_rb;
 	TransformComponent phyBox_tf;
 	RenderBoxComponent phyBox_render;
 
 	set(phyBox_rb, glm::vec3{ 20.0f,20.0f,0.0f }, 200.0f);
-	phyBox_rb.position.x = 300.0f;
+	phyBox_rb.position.x = 250.0f;
 	phyBox_rb.position.y = 600.0f;
+	phyBox_rb.rotation.x = phyBox_rb.rotation.y = phyBox_rb.rotation.z = 0.0f;
+	phyBox_rb.angularVelocity = 0.0f;
 	phyBox_render.color = glm::vec3{ 1.0f,1.0f,0.0f };
 
 	phyBox_tf.size.x = phyBox_rb.size.x;
@@ -65,11 +96,17 @@ void PhysicsSystem::init(){
 	phyBox_tf.size.z = 0.0f;
 	phyBox_tf.position.x = phyBox_rb.position.x;
 	phyBox_tf.position.y = phyBox_rb.position.y;
+	phyBox_tf.rotation = phyBox_rb.rotation;
 	phyBox_tf.position.z = 0.0f;
 
+	gLimeEngine.addComponent<TagComponent>(phyBox, TagComponent{
+	"box"
+	});
 	gLimeEngine.addComponent<TransformComponent>(phyBox, phyBox_tf);
 	gLimeEngine.addComponent<RigidBody2DComponent>(phyBox, phyBox_rb);
 	gLimeEngine.addComponent<RenderBoxComponent>(phyBox, phyBox_render);
+
+	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
 
 }
 
@@ -142,7 +179,9 @@ void PhysicsSystem::update(){
 }
 
 void PhysicsSystem::onEvent(Event& e){
-
+	if (e.getType() == EventID::E_WINDOW_KEY_PRESSED) {
+		//std::cout << "physics onEvent";
+	}
 }
 
 void PhysicsSystem::broadPhase(){
@@ -181,6 +220,7 @@ void PhysicsSystem::broadPhase(){
 void PhysicsSystem::set(RigidBody2DComponent&rb, glm::vec3& size, float m) {
 		rb.position = glm::vec3{ 0.0f,0.0f,0.0f };
 		rb.rotation = glm::vec3{0.0f,0.0f,0.0f};
+		rb.size = size;
 		rb.velocity = glm::vec3{ 0.0f,0.0f,0.0f };
 		rb.angularVelocity = 0.0f;
 		rb.force = glm::vec3{ 0.0f,0.0f,0.0f };

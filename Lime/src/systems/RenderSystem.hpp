@@ -24,6 +24,7 @@ public:
 
 	Shader mShader;
 	unsigned int mVAO;
+    bool mDebugDraw = false;
 
 };
 

@@ -11,9 +11,9 @@ extern Lime gLimeEngine;
 extern std::shared_ptr<CameraSystem> camSystem;
 
 void RenderSystem::init(){
-	gLimeEngine.addEventListener(EventID::E_WINDOW_RESIZED, [this](Event& e) {this->onEvent(e); });
 	mShader.init("Lime/shaders/renderable.vert", "Lime/shaders/renderable.frag");
 	gLimeEngine.mGraphicsManager->gfx.initRenderData(mShader, vertices, sizeof(vertices), mVAO, true);
+    gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
 
 }
 
@@ -33,14 +33,20 @@ void RenderSystem::update(){
                 mShader.setMat4("projection", cam.projmat);
                 mShader.setMat4("view", cam.viewmat);
                 mShader.setVec3("color", renderBoxComponent.color);
-
-                gLimeEngine.mGraphicsManager->gfx.mShader = mShader;
-                gLimeEngine.mGraphicsManager->gfx.drawRenderData(mVAO, transformComponent.model, transformComponent.size, 6, true, 0, GL_POLYGON);
+                if (mDebugDraw) {
+                    gLimeEngine.mGraphicsManager->gfx.mShader = mShader;
+                    gLimeEngine.mGraphicsManager->gfx.drawRenderData(mVAO, transformComponent.model, transformComponent.size, 6, true, 0, GL_LINE_LOOP);
+                }
             }
         }
     }
 }
 
 void RenderSystem::onEvent(Event& e){
-
+    if (e.getType() == EventID::E_WINDOW_KEY_PRESSED) {
+        auto button = e.getParam<SDL_Scancode>(EventID::P_WINDOW_KEY_PRESSED_KEYCODE);
+        if (button == SDL_SCANCODE_P) {
+            mDebugDraw = !mDebugDraw;
+        }
+    }
 }

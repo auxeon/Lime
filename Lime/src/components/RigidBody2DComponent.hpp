@@ -25,7 +25,7 @@ public:
 // RIGIDBODY2D COMPONENT SERDE
 inline void to_json(ordered_json& j, const RigidBody2DComponent& x) {
 	to_json(j["position"], x.position);
-	to_json(j["rotatition"], x.rotation);
+	to_json(j["rotation"], x.rotation);
 	to_json(j["size"], x.size);
 
 	to_json(j["force"], x.force);
@@ -44,7 +44,7 @@ inline void to_json(ordered_json& j, const RigidBody2DComponent& x) {
 
 inline void from_json(const ordered_json& j, RigidBody2DComponent& x) {
 	from_json(j["position"], x.position);
-	from_json(j["rotatition"], x.rotation);
+	from_json(j["rotation"], x.rotation);
 	from_json(j["size"], x.size);
 
 	from_json(j["force"], x.force);

@@ -33,23 +33,48 @@ void ControllerSystem::onEvent(Event& e){
 
 
 				if (controllerComponent.UP == button) {
-					transformComponent.position += glm::vec3(0.0f, controllerComponent.STEP.y, 0.0f);
+					if (gLimeEngine.hasComponent<RigidBody2DComponent>(entity)) {
+						auto& rb = gLimeEngine.getComponent<RigidBody2DComponent>(entity);
+						rb.velocity.y = controllerComponent.STEP.y;
+					}
+					else {
+						transformComponent.position += glm::vec3(0.0f, controllerComponent.STEP.y, 0.0f);
+					}
+
 					LM_INFO("[Entity ID: {}] UP", entity);
 				}
 
 				if (controllerComponent.DOWN == button) {
 
-					transformComponent.position += glm::vec3(0.0f, -controllerComponent.STEP.y, 0.0f);
+					if (gLimeEngine.hasComponent<RigidBody2DComponent>(entity)) {
+						auto& rb = gLimeEngine.getComponent<RigidBody2DComponent>(entity);
+						rb.velocity.y = -controllerComponent.STEP.y;
+					}
+					else {
+						transformComponent.position += glm::vec3(0.0f, -controllerComponent.STEP.y, 0.0f);
+					}
 					LM_INFO("[Entity ID: {}] DOWN", entity);
 				}
 
 				if (controllerComponent.LEFT == button) {
-					transformComponent.position += glm::vec3(-controllerComponent.STEP.x, 0.0f, 0.0f);
+					if (gLimeEngine.hasComponent<RigidBody2DComponent>(entity)) {
+						auto& rb = gLimeEngine.getComponent<RigidBody2DComponent>(entity);
+						rb.velocity.x = -controllerComponent.STEP.x;
+					}
+					else {
+						transformComponent.position += glm::vec3(-controllerComponent.STEP.x, 0.0f, 0.0f);
+					}
 					LM_INFO("[Entity ID: {}] LEFT", entity);
 				}
 
 				if (controllerComponent.RIGHT == button) {
-					transformComponent.position += glm::vec3(controllerComponent.STEP.x, 0.0f, 0.0f);
+					if (gLimeEngine.hasComponent<RigidBody2DComponent>(entity)) {
+						auto& rb = gLimeEngine.getComponent<RigidBody2DComponent>(entity);
+						rb.velocity.x = controllerComponent.STEP.x;
+					}
+					else {
+						transformComponent.position += glm::vec3(controllerComponent.STEP.x, 0.0f, 0.0f);
+					}
 					LM_INFO("[Entity ID: {}] RIGHT", entity);
 				}
 

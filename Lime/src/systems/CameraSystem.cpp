@@ -22,7 +22,7 @@ void CameraSystem::init(){
 		auto& ctrl = gLimeEngine.getComponent<cp>(entity);
 		auto& txfm = gLimeEngine.getComponent<tf>(entity);
 		auto& cam = gLimeEngine.getComponent<cm>(entity);
-		orthoInitCamera(cam, 0, cam.width, 0, cam.height);
+		orthoInitCamera(cam, (float)0, (float)cam.width, (float)0, (float)cam.height);
 	}
 	// register the call backs 
 	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
@@ -87,7 +87,7 @@ void CameraSystem::onEvent(Event& e){
 			cam.width = w;
 			cam.height = h;
 			//orthoSetProjection(cam, -w / h * cam.zoom, w / h * cam.zoom, -cam.zoom, cam.zoom);
-			orthoSetProjection(cam, 0, w, 0, h);
+			orthoSetProjection(cam, (float)0, (float)w, (float)0, (float)h);
 		}
 	}
 }

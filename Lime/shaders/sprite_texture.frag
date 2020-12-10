@@ -11,7 +11,6 @@ uniform int mode;
 
 void main()
 {
-	// linearly interpolate between both textures (80% container, 20% awesomeface)
 	if(mode == 0){
 		FragColor = texture(texture1, TexCoord);
 	}
