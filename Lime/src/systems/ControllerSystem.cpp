@@ -15,8 +15,9 @@ void ControllerSystem::init(){
 }
 
 void ControllerSystem::update(){
-
-
+	for (auto& entity : mEntities) {
+		
+	}
 }
 
 void ControllerSystem::onEvent(Event& e){
@@ -35,7 +36,8 @@ void ControllerSystem::onEvent(Event& e){
 				if (controllerComponent.UP == button) {
 					if (gLimeEngine.hasComponent<RigidBody2DComponent>(entity)) {
 						auto& rb = gLimeEngine.getComponent<RigidBody2DComponent>(entity);
-						rb.velocity.y = controllerComponent.STEP.y;
+						//rb.velocity.y = controllerComponent.STEP.y;
+						rb.force.y = controllerComponent.STEP.y;
 					}
 					else {
 						transformComponent.position += glm::vec3(0.0f, controllerComponent.STEP.y, 0.0f);
@@ -47,8 +49,8 @@ void ControllerSystem::onEvent(Event& e){
 				if (controllerComponent.DOWN == button) {
 
 					if (gLimeEngine.hasComponent<RigidBody2DComponent>(entity)) {
-						auto& rb = gLimeEngine.getComponent<RigidBody2DComponent>(entity);
-						rb.velocity.y = -controllerComponent.STEP.y;
+						//auto& rb = gLimeEngine.getComponent<RigidBody2DComponent>(entity);
+						//rb.velocity.y = -controllerComponent.STEP.y;
 					}
 					else {
 						transformComponent.position += glm::vec3(0.0f, -controllerComponent.STEP.y, 0.0f);
@@ -60,6 +62,7 @@ void ControllerSystem::onEvent(Event& e){
 					if (gLimeEngine.hasComponent<RigidBody2DComponent>(entity)) {
 						auto& rb = gLimeEngine.getComponent<RigidBody2DComponent>(entity);
 						rb.velocity.x = -controllerComponent.STEP.x;
+						transformComponent.size.x = -1*fabs(transformComponent.size.x);
 					}
 					else {
 						transformComponent.position += glm::vec3(-controllerComponent.STEP.x, 0.0f, 0.0f);
@@ -71,6 +74,7 @@ void ControllerSystem::onEvent(Event& e){
 					if (gLimeEngine.hasComponent<RigidBody2DComponent>(entity)) {
 						auto& rb = gLimeEngine.getComponent<RigidBody2DComponent>(entity);
 						rb.velocity.x = controllerComponent.STEP.x;
+						transformComponent.size.x = fabs(transformComponent.size.x);
 					}
 					else {
 						transformComponent.position += glm::vec3(controllerComponent.STEP.x, 0.0f, 0.0f);

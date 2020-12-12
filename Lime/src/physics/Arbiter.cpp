@@ -83,7 +83,7 @@ void Arbiter::Update(Contact* newContacts, int numNewContacts)
 void Arbiter::PreStep(float inv_dt)
 {
 	const float k_allowedPenetration = 0.01f;
-	float k_biasFactor = PhysicsSystem::positionCorrection ? 0.2f : 0.0f;
+	float k_biasFactor = PhysicsSystem::positionCorrection ? 0.3f : 0.0f;
 
 	for (int i = 0; i < numContacts; ++i)
 	{

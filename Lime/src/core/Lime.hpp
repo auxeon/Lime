@@ -94,12 +94,14 @@ public:
 		// will add this into the level json later 
 		loadResource(gridmap, "Lime/maps/map_00.json");
 
+		const int blocksize = 20;
+
+		// draw the plain cells
 		for (int i = 0; i < gridmap.rows ; ++i) {
 			for (int j = 0; j < gridmap.cols; ++j) {
-				//std::cout << gridmap.cells[i][j].data << "";
 				if (gridmap.cells[i][j].data == 1) {
 					EntityID wall = createEntity();
-					const int blocksize = 20;
+
 					float x = (float)j * blocksize + blocksize/2;
 					float y = (float)(gridmap.rows - i - 1) * blocksize + blocksize/2;
 					addComponent(wall, TagComponent{
@@ -109,23 +111,6 @@ public:
 						glm::vec3{x, y,1.0f}, // position 
 						glm::vec3{0.0f,0.0f,0.0f}, // rotation
 						glm::vec3{blocksize,blocksize,1.0f}, // size
-					});
-					addComponent(wall, RigidBody2DComponent{
-						glm::vec3{x, y,1.0f}, // position 
-						glm::vec3{0.0f,0.0f,0.0f}, // rotation
-						glm::vec3{blocksize,blocksize,1.0f}, // size
-						glm::vec3{0.0f,0.0f,0.0f}, // force 
-						0.0f, // torque
-						glm::vec3{0.0f,0.0f,0.0f}, // velocity
-						0.0f, // angular velocity
-						0.2f, // friction
-						FLT_MAX, // mass
-						0.0f, // invMass
-						0.0f, // I
-						0.0f  // InvI
-					});
-					addComponent(wall, RenderBoxComponent{
-						glm::vec3{0.0f,1.0f,0.0f}
 					});
 					addComponent(wall, SpriteComponent{
 						"Lime/res/grass.png",
@@ -137,14 +122,70 @@ public:
 					});
 				}
 			}
-			//std::cout << std::endl;
+		}
+		// composite and add rigidbody rects
+		// compositing along rows
+		int sj = -1;
+		int ej = -1;
+		for (int i = 0; i < gridmap.rows; ++i) {
+			sj = ej = 0;
+			for (int j = 1; j < gridmap.cols; ++j) {
+				// from 0 -> 1
+				if (gridmap.cells[i][j].data && !gridmap.cells[i][j-1].data) { 
+					sj = j;
+					ej = j;
+				}
+				// from 1 -> 1
+				if (gridmap.cells[i][j].data && gridmap.cells[i][j-1].data) {
+					ej = j;
+				}
+				// from 1 -> 0
+				if ((!gridmap.cells[i][j].data && gridmap.cells[i][j-1].data) || j+1==gridmap.cols) {
+					if (ej - sj > 0) {
+
+					float xs = (float)(sj) * blocksize - blocksize/2;
+					float xe = (float)(ej) * blocksize + blocksize/2;
+					float xm = (float)(xs + xe) / 2.0f;
+					float ym = (float)(gridmap.rows - i - 1) * blocksize;
+					// center offset compensation
+					xm = xm + blocksize / 2;
+					ym = ym + blocksize / 2;
+
+					// more than 1 cell contiguous allocation found
+						EntityID collider = createEntity();
+						addComponent(collider, TagComponent{
+							"collider_ground"
+							});
+						addComponent(collider, TransformComponent{
+							glm::vec3{xm, ym,1.0f}, // position 
+							glm::vec3{0.0f,0.0f,0.0f}, // rotation
+							glm::vec3{xe-xs,blocksize,1.0f}, // size
+							});
+						addComponent(collider, RigidBody2DComponent{
+							glm::vec3{xm, ym,1.0f}, // position 
+							glm::vec3{0.0f,0.0f,0.0f}, // rotation
+							glm::vec3{xe-xs,blocksize,1.0f}, // size
+							glm::vec3{0.0f,0.0f,0.0f}, // force 
+							0.0f, // torque
+							glm::vec3{0.0f,0.0f,0.0f}, // velocity
+							0.0f, // angular velocity
+							0.2f, // friction
+							FLT_MAX, // mass
+							0.0f, // invMass
+							0.0f, // I
+							0.0f  // InvI
+							});
+						addComponent(collider, RenderBoxComponent{
+							glm::vec3{0.0f,1.0f,0.0f}
+							});
+					}
+				}
+			}
 		}
 
 		LM_CORE_INFO("MAP LOADED !");
-
-
-
 	}
+
 	// save
 	void save(string filepath) {
 		std::ofstream out(filepath);
@@ -203,12 +244,12 @@ public:
 
 		// register system and set its signature 
 		registerSystem<ControllerSystem>();
+		registerSystem<TransformSystem>();
+		registerSystem<PhysicsSystem>();
 		registerSystem<SpriteSystem>();
 		registerSystem<CameraSystem>();
 		registerSystem<BroadcastSystem>();
 		registerSystem<DMSystem>();
-		registerSystem<PhysicsSystem>();
-		registerSystem<TransformSystem>();
 		registerSystem<RenderSystem>();
 
 		// Controller System

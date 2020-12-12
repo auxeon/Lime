@@ -14,7 +14,6 @@ void RenderSystem::init(){
 	mShader.init("Lime/shaders/renderable.vert", "Lime/shaders/renderable.frag");
 	gLimeEngine.mGraphicsManager->gfx.initRenderData(mShader, vertices, sizeof(vertices), mVAO, true);
     gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
-
 }
 
 void RenderSystem::update(){
