@@ -8,7 +8,10 @@ extern Lime gLimeEngine;
 
 void TransformSystem::init() {
 
-	gLimeEngine.addEventListener(EventID::E_BROADCAST_EVENT, [this](Event& e) {this->onEvent(e); });
+	if (!mInit) {
+		gLimeEngine.addEventListener(EventID::E_BROADCAST_EVENT, [this](Event& e) {this->onEvent(e); });
+		mInit = true;
+	}
 }
 
 void TransformSystem::update() {

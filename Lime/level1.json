@@ -1,4 +1,7 @@
 {
+    "Map":{
+        "src":"Lime/maps/map_00.json"
+    },
     "Entities": [
         {
             "EntityID": 0,

@@ -4,9 +4,13 @@
 
 extern Lime gLimeEngine;
 
+
 void BroadcastSystem::init(){
 
-	gLimeEngine.addEventListener(EventID::E_BROADCAST_EVENT, [this](Event& e) {this->onEvent(e); });
+	if (!mInit) {
+		gLimeEngine.addEventListener(EventID::E_BROADCAST_EVENT, [this](Event& e) {this->onEvent(e); });
+		mInit = true;
+	}
 }
 
 void BroadcastSystem::update(){

@@ -11,7 +11,10 @@ using cp = ControllerComponent;
 using tf = TransformComponent;
 
 void ControllerSystem::init(){
-	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
+	if (!mInit) {
+		gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
+		mInit = true;
+	}
 }
 
 void ControllerSystem::update(){

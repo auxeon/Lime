@@ -13,7 +13,10 @@ void handleEventFunc(EntityID& entity, Event& e) {
 }
 
 void DMSystem::init(){
-	gLimeEngine.addEventListener(EventID::E_DM_EVENT, [this](Event& e) {this->onEvent(e); });
+	if (!mInit) {
+		gLimeEngine.addEventListener(EventID::E_DM_EVENT, [this](Event& e) {this->onEvent(e); });
+		mInit = true;
+	}
 }
 
 void DMSystem::update(){

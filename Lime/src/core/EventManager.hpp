@@ -14,15 +14,19 @@ public:
 
 	void sendEvent(Event& event){
 		EventID type = event.getType();
-		for (auto const& listener : listeners[type]){
-			listener(event);
+		if (listeners[type].size() > 0) {
+			for (auto const& listener : listeners[type]) {
+				listener(event);
+			}
 		}
 	}
 
 	void sendEvent(EventID eventId){
 		Event event(eventId);
-		for (auto const& listener : listeners[eventId]){
-			listener(event);
+		if (listeners[eventId].size() > 0) {
+			for (auto const& listener : listeners[eventId]) {
+				listener(event);
+			}
 		}
 	}
 
@@ -46,6 +50,13 @@ public:
 				}
 				timequeue.pop();
 			}
+		}
+	}
+
+	void clear() {
+		listeners.clear();
+		while (timequeue.size() > 0) {
+			timequeue.pop();
 		}
 	}
 

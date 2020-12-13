@@ -32,9 +32,12 @@ void SpriteSystem::init(){
 
     camSystem = gLimeEngine.mSystemManager->getSystem<CameraSystem>();
 
-    // do the event callback registration
-    gLimeEngine.addEventListener(EventID::E_GRAPHICS_DEBUG_TOGGLE, [this](Event& e) {this->onEvent(e); });
-    gLimeEngine.addEventListener(EventID::E_GRAPHICS_CAMERA_UPDATED, [this](Event& e) {this->onEvent(e); });
+    if (!mInit) {
+        // do the event callback registration
+        gLimeEngine.addEventListener(EventID::E_GRAPHICS_DEBUG_TOGGLE, [this](Event& e) {this->onEvent(e); });
+        gLimeEngine.addEventListener(EventID::E_GRAPHICS_CAMERA_UPDATED, [this](Event& e) {this->onEvent(e); });
+        mInit = true;
+    }
 }
 
 void SpriteSystem::update(){

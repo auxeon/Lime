@@ -2,6 +2,7 @@
 #define ENTITYMANAGER_HPP
 
 #include "Pch.hpp"
+#include "limits.h"
 
 class EntityManager{
 public:
@@ -10,22 +11,15 @@ public:
 			mAvailableEntities.push_back(entity);
 		}
 	}
-	// destructors not needed as the containers will get destroyed at scope end
-	//~EntityManager() {
-	//	std::vector<EntityID> allocd;
-	//	for (auto& e : mAllocdEntities) {
-	//		allocd.push_back(e);
-	//	}
-	//	for (auto& e : allocd) {
-	//		destroyEntity(e);
-	//	}
-	//}
 	EntityID createEntity(){
 		assert(mLivingEntityCount < MAX_ENTITIES && "Too many entities in existence.");
 		EntityID id = mAvailableEntities.front();
 		mAllocdEntities.insert(id);
 		mAvailableEntities.pop_front();
 		++mLivingEntityCount;
+		if (mLivingEntityCount == UINT32_MAX && mAvailableEntities.size() > 0) {
+			mLivingEntityCount = 0;
+		}
 		LM_CORE_TRACE("[Entity ID: {}] Entity created", id);
 		return id;
 	}

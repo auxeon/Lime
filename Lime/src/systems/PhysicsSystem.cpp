@@ -22,8 +22,7 @@ bool PhysicsSystem::positionCorrection = true;
 void PhysicsSystem::init(){
 
 
-	gravity = glm::vec3{ 0.0f,-150.0f,0.0f };
-	iterations = 10;
+
 
 	//EntityID phyGround = gLimeEngine.createEntity();
 	//// phyGround 
@@ -106,7 +105,12 @@ void PhysicsSystem::init(){
 	//gLimeEngine.addComponent<RigidBody2DComponent>(phyBox, phyBox_rb);
 	//gLimeEngine.addComponent<RenderBoxComponent>(phyBox, phyBox_render);
 
-	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
+	if (!mInit) {
+		gravity = glm::vec3{ 0.0f,-150.0f,0.0f };
+		iterations = 10;
+		gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
+		mInit = true;
+	}
 
 }
 

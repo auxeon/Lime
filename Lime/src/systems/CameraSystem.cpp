@@ -24,10 +24,13 @@ void CameraSystem::init(){
 		auto& cam = gLimeEngine.getComponent<cm>(entity);
 		orthoInitCamera(cam, (float)0, (float)cam.width, (float)0, (float)cam.height);
 	}
-	// register the call backs 
-	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
-	gLimeEngine.addEventListener(EventID::E_WINDOW_MOUSE_MOVE, [this](Event& e) {this->onEvent(e); });
-	gLimeEngine.addEventListener(EventID::E_WINDOW_RESIZED, [this](Event& e) {this->onEvent(e); });
+	if (!mInit) {
+		// register the call backs 
+		gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
+		gLimeEngine.addEventListener(EventID::E_WINDOW_MOUSE_MOVE, [this](Event& e) {this->onEvent(e); });
+		gLimeEngine.addEventListener(EventID::E_WINDOW_RESIZED, [this](Event& e) {this->onEvent(e); });
+		mInit = true;
+	}
 }
 
 void CameraSystem::update(){

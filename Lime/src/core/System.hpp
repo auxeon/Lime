@@ -18,6 +18,7 @@ public:
 	}
 public:
 	std::set<EntityID> mEntities;
+	bool mInit = false;
 };
 
 #endif

@@ -106,6 +106,9 @@ enum EventID {
 	E_DM_EVENT,
 		P_DM_EVENT_ENTITYID,
 		P_DM_EVENT_DATA,
+	// GAME STATE EVENTS
+	E_GS_LEVEL,
+		P_GS_LEVEL_NAME,
 	EP_TOTAL
 };
 
@@ -116,6 +119,13 @@ enum PlayerStates {
 	PS_GLIDE,
 	PS_GROUND,
 	PS_TOTAL
+};
+
+enum GameStates {
+	GS_START,
+	GS_MENU,
+	GS_LEVEL,
+	GS_END
 };
 
 enum CameraMovements {

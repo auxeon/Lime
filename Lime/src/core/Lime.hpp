@@ -50,6 +50,10 @@ public:
 		serializeComponent<SpriteComponent>(j["SpriteComponent"], entity);
 		serializeComponent<CameraComponent>(j["CameraComponent"], entity);
 		serializeComponent<RigidBody2DComponent>(j["RigidBody2DComponent"], entity);
+		// make sure we dont dump spruious ids
+		if (hasComponent<RigidBody2DComponent>(entity)) {
+			j["RigidBody2DComponent"]["id"] = entity;
+		}
 		serializeComponent<RenderBoxComponent>(j["RenderBoxComponent"], entity);
 
 	}
@@ -73,12 +77,18 @@ public:
 		deserializeComponent<ControllerComponent>(j["ControllerComponent"], entity);
 		deserializeComponent<SpriteComponent>(j["SpriteComponent"], entity);
 		deserializeComponent<CameraComponent>(j["CameraComponent"], entity);
+		// make sure the rb and entityid are syncd
+		if (!j["RigidBody2DComponent"].is_null()) {
+			j["RigidBody2DComponent"]["id"] = entity;
+		}
 		deserializeComponent<RigidBody2DComponent>(j["RigidBody2DComponent"], entity);
 		deserializeComponent<RenderBoxComponent>(j["RenderBoxComponent"], entity);
 	}
 
 	// load 
 	void load(string filepath) {
+
+
 		std::ifstream in(filepath);
 		ordered_json j;
 		in >> j;
@@ -89,101 +99,140 @@ public:
 			}
 		}
 
+		in.close();
 
-		// doing the map loading 
-		// will add this into the level json later 
-		loadResource(gridmap, "Lime/maps/map_00.json");
+		if (!j["Map"].is_null()) {
 
-		const int blocksize = 20;
+			// doing the map loading 
+			// will add this into the level json later 
+			string fname;
+			from_json(j["Map"]["src"], fname);
+			in.open(fname,std::ios::in);
+			ordered_json jm;
+			in >> jm;
 
-		// draw the plain cells
-		for (int i = 0; i < gridmap.rows ; ++i) {
-			for (int j = 0; j < gridmap.cols; ++j) {
-				if (gridmap.cells[i][j].data == 1) {
-					EntityID wall = createEntity();
+			loadResource(gridmap, fname);
 
-					float x = (float)j * blocksize + blocksize/2;
-					float y = (float)(gridmap.rows - i - 1) * blocksize + blocksize/2;
-					addComponent(wall, TagComponent{
-						"sprite_ground"
-					});
-					addComponent(wall, TransformComponent{
-						glm::vec3{x, y,1.0f}, // position 
-						glm::vec3{0.0f,0.0f,0.0f}, // rotation
-						glm::vec3{blocksize,blocksize,1.0f}, // size
-					});
-					addComponent(wall, SpriteComponent{
-						"Lime/res/grass.png",
-						(GLuint)0,
-						false,
-						0.0f,
-						1,
-						1
-					});
-				}
-			}
-		}
-		// composite and add rigidbody rects
-		// compositing along rows
-		int sj = -1;
-		int ej = -1;
-		for (int i = 0; i < gridmap.rows; ++i) {
-			sj = ej = 0;
-			for (int j = 1; j < gridmap.cols; ++j) {
-				// from 0 -> 1
-				if (gridmap.cells[i][j].data && !gridmap.cells[i][j-1].data) { 
-					sj = j;
-					ej = j;
-				}
-				// from 1 -> 1
-				if (gridmap.cells[i][j].data && gridmap.cells[i][j-1].data) {
-					ej = j;
-				}
-				// from 1 -> 0
-				if ((!gridmap.cells[i][j].data && gridmap.cells[i][j-1].data) || j+1==gridmap.cols) {
-					if (ej - sj > 0) {
+			int blocksize;
+			from_json(jm["tilesize"], blocksize);
+			string wallsprite;
+			from_json(jm["walltile"], wallsprite);
+			string spritetag;
+			from_json(jm["spritetag"], spritetag);
+			string collidertag;
+			from_json(jm["collidertag"], collidertag);
 
-					float xs = (float)(sj) * blocksize - blocksize/2;
-					float xe = (float)(ej) * blocksize + blocksize/2;
-					float xm = (float)(xs + xe) / 2.0f;
-					float ym = (float)(gridmap.rows - i - 1) * blocksize;
-					// center offset compensation
-					xm = xm + blocksize / 2;
-					ym = ym + blocksize / 2;
+			// draw the plain cells
+			for (int i = 0; i < gridmap.rows; ++i) {
+				for (int j = 0; j < gridmap.cols; ++j) {
+					if (gridmap.cells[i][j].data == 1) {
+						EntityID wall = createEntity();
 
-					// more than 1 cell contiguous allocation found
-						EntityID collider = createEntity();
-						addComponent(collider, TagComponent{
-							"collider_ground"
+						float x = (float)j * blocksize + blocksize / 2;
+						float y = (float)(gridmap.rows - i - 1) * blocksize + blocksize / 2;
+						addComponent(wall, TagComponent{
+							spritetag
 							});
-						addComponent(collider, TransformComponent{
-							glm::vec3{xm, ym,1.0f}, // position 
+						addComponent(wall, TransformComponent{
+							glm::vec3{x, y,1.0f}, // position 
 							glm::vec3{0.0f,0.0f,0.0f}, // rotation
-							glm::vec3{xe-xs,blocksize,1.0f}, // size
+							glm::vec3{blocksize,blocksize,1.0f}, // size
 							});
-						addComponent(collider, RigidBody2DComponent{
-							glm::vec3{xm, ym,1.0f}, // position 
-							glm::vec3{0.0f,0.0f,0.0f}, // rotation
-							glm::vec3{xe-xs,blocksize,1.0f}, // size
-							glm::vec3{0.0f,0.0f,0.0f}, // force 
-							0.0f, // torque
-							glm::vec3{0.0f,0.0f,0.0f}, // velocity
-							0.0f, // angular velocity
-							0.2f, // friction
-							FLT_MAX, // mass
-							0.0f, // invMass
-							0.0f, // I
-							0.0f  // InvI
-							});
-						addComponent(collider, RenderBoxComponent{
-							glm::vec3{0.0f,1.0f,0.0f}
+						addComponent(wall, SpriteComponent{
+							wallsprite,
+							(GLuint)0,
+							false,
+							0.0f,
+							1,
+							1
 							});
 					}
 				}
 			}
-		}
 
+			// composite and add rigidbody rects
+			// compositing along rows
+			int sj = -1;
+			int ej = -1;
+			for (int i = 0; i < gridmap.rows; ++i) {
+				sj = ej = 0;
+				for (int j = 1; j < gridmap.cols; ++j) {
+					// from 0 -> 1
+					if (gridmap.cells[i][j].data && !gridmap.cells[i][j - 1].data) {
+						sj = j;
+						ej = j;
+					}
+					// from 1 -> 1
+					if (gridmap.cells[i][j].data && gridmap.cells[i][j - 1].data) {
+						ej = j;
+					}
+					// from 1 -> 0
+					if ((!gridmap.cells[i][j].data && gridmap.cells[i][j - 1].data) || j + 1 == gridmap.cols) {
+						if (ej - sj > 0) {
+
+							float xs = (float)(sj)*blocksize - blocksize / 2;
+							float xe = (float)(ej)*blocksize + blocksize / 2;
+							float xm = (float)(xs + xe) / 2.0f;
+							float ym = (float)(gridmap.rows - i - 1) * blocksize;
+							// center offset compensation
+							xm = xm + blocksize / 2;
+							ym = ym + blocksize / 2;
+
+							// more than 1 cell contiguous allocation found
+							EntityID collider = createEntity();
+							addComponent(collider, TagComponent{
+								collidertag
+								});
+							addComponent(collider, TransformComponent{
+								glm::vec3{xm, ym,1.0f}, // position 
+								glm::vec3{0.0f,0.0f,0.0f}, // rotation
+								glm::vec3{xe - xs,blocksize,1.0f}, // size
+								});
+							addComponent(collider, RigidBody2DComponent{
+								collider,
+								glm::vec3{xm, ym,1.0f}, // position 
+								glm::vec3{0.0f,0.0f,0.0f}, // rotation
+								glm::vec3{xe - xs,blocksize,1.0f}, // size
+								glm::vec3{0.0f,0.0f,0.0f}, // force 
+								0.0f, // torque
+								glm::vec3{0.0f,0.0f,0.0f}, // velocity
+								0.0f, // angular velocity
+								0.2f, // friction
+								FLT_MAX, // mass
+								0.0f, // invMass
+								0.0f, // I
+								0.0f  // InvI
+								});
+							addComponent(collider, RenderBoxComponent{
+								glm::vec3{0.0f,1.0f,0.0f}
+								});
+						}
+					}
+				}
+			}
+		}
 		LM_CORE_INFO("MAP LOADED !");
+	}
+
+	void unload() {
+		std::vector<EntityID> toEject;
+		for (auto& entity : mEntityManager->mAllocdEntities) {
+			toEject.push_back(entity);
+		}
+		for (auto& entity : toEject) {
+			destroyEntity(entity);
+		}
+		mEntityManager->mLivingEntityCount = 0;
+		//mEventManager->clear();
+		//mComponentManager.reset();
+		//mEntityManager.reset();
+		//mEventManager.reset();
+		//mSystemManager.reset();
+		//mChrononManager.reset();
+		//mGraphicsManager.reset();
+		//mInputManager.reset();
+		//mResourceManager.reset();
+		//init();
 	}
 
 	// save
@@ -200,16 +249,6 @@ public:
 	}
 	// init
 	void init(){
-
-		Log::init();
-
-		// REGISTER ALL ENUMS
-		LIMEENUMS_MOUSEBUTTONS::stringify();
-		LIMEENUMS_EVENTID::stringify();
-		LIMEENUMS_PLAYERSTATES::stringify();
-		LIMEENUMS_CAMERAMOVEMENTS::stringify();
-		LIMEENUMS_SDL_SCANCODES::stringify();
-
 
 		// ECS
 		mEntityManager = std::make_unique<EntityManager>();
@@ -314,13 +353,18 @@ public:
 			setSystemArchetype<RenderSystem>(atype);
 		}
 
+		if (!mInit) {
 
-		addEventListener(EventID::E_TIMED_EVENT, [this](Event& e) {this->onTimedEvent(e); });
-		
-		//Event timedevent1(EventID::E_TIMED_EVENT);
-		//timedevent1.setParam<string>(EventID::P_TIMED_EVENT_DATA, "TEMPORAL MESSAGE TRIGGERED");
-		//mEventManager->sendTimedEvent(timedevent1, 2000);
+			addEventListener(EventID::E_TIMED_EVENT, [this](Event& e) {this->onTimedEvent(e); });
 
+			//Event timedevent1(EventID::E_TIMED_EVENT);
+			//timedevent1.setParam<string>(EventID::P_TIMED_EVENT_DATA, "TEMPORAL MESSAGE TRIGGERED");
+			//mEventManager->sendTimedEvent(timedevent1, 2000);
+
+			addEventListener(EventID::E_GS_LEVEL, [this](Event& e) {onEvent(e); });
+			mInit = true;
+
+		}
 
 	}
 
@@ -338,6 +382,13 @@ public:
 	}
 
 	void onEvent(Event& e) {
+		if (e.getType() == EventID::E_GS_LEVEL) {
+			string levelname = e.getParam<string>(EventID::P_GS_LEVEL_NAME);
+			//save();
+			unload();
+			load(levelname);
+			systemInit();
+		}
 		mInputManager->onEvent(e);
 		mGraphicsManager->onEvent(e);
 		mSystemManager->onEvent(e);
@@ -355,7 +406,6 @@ public:
 			Event timedevent1(EventID::E_TIMED_EVENT);
 			timedevent1.setParam<string>(EventID::P_TIMED_EVENT_DATA, "TEMPORAL MESSAGE TRIGGERED");
 			mEventManager->sendTimedEvent(timedevent1, 2000);
-
 		}
 	}
 
@@ -515,6 +565,8 @@ public:
 	std::unique_ptr<InputManager> mInputManager;
 	std::unique_ptr<ResourceManager> mResourceManager;
 	bool mIsRunning = false;
+	bool mInit = false;
+	string mCurrentState;
 	double dt;
 };
 
@@ -534,6 +586,24 @@ inline void sdlPoll() {
 		}
 		else if (e.type == SDL_QUIT) {
 			Event event(EventID::E_WINDOW_QUIT);
+			gLimeEngine.sendEvent(event);
+		}
+		// GS_MENU
+		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_1)) {
+			Event event(EventID::E_GS_LEVEL);
+			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/level1.json");
+			gLimeEngine.sendEvent(event);
+		}
+		// GS_LEVEL
+		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_2)) {
+			Event event(EventID::E_GS_LEVEL);
+			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/level2.json");
+			gLimeEngine.sendEvent(event);
+		}
+		// GS_END
+		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_3)) {
+			Event event(EventID::E_GS_LEVEL);
+			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/game_end.json");
 			gLimeEngine.sendEvent(event);
 		}
 		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_ESCAPE)) {

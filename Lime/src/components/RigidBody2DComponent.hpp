@@ -4,6 +4,7 @@
 
 class RigidBody2DComponent {
 public:
+	EntityID id;
 	// replicas of the transformComponent for ease of access
 	glm::vec3 position;
 	glm::vec3 rotation;
@@ -24,6 +25,8 @@ public:
 
 // RIGIDBODY2D COMPONENT SERDE
 inline void to_json(ordered_json& j, const RigidBody2DComponent& x) {
+
+	to_json(j["id"], x.id);
 	to_json(j["position"], x.position);
 	to_json(j["rotation"], x.rotation);
 	to_json(j["size"], x.size);
@@ -43,6 +46,8 @@ inline void to_json(ordered_json& j, const RigidBody2DComponent& x) {
 
 
 inline void from_json(const ordered_json& j, RigidBody2DComponent& x) {
+
+	from_json(j["id"], x.id);
 	from_json(j["position"], x.position);
 	from_json(j["rotation"], x.rotation);
 	from_json(j["size"], x.size);

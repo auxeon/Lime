@@ -1,0 +1,285 @@
+{
+    "Map":{
+        "src":"Lime/maps/map_01.json"
+    },
+    "Entities": [
+        {
+            "EntityID": 0,
+            "TagComponent" : {
+                "tag" : "goku"
+            },
+            "TransformComponent": {
+                "position": {
+                    "x": 250.0,
+                    "y": 500.0,
+                    "z": 0.0
+                },
+                "rotation" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "size" :{
+                    "x" : 40.0,
+                    "y" : 60.0,
+                    "z" : 0.0
+                }
+            },
+            "PlayerComponent": {
+                "state": "PS_IDLE",
+                "health": 100.0,
+                "score": 0.0,
+                "energy": 0.0,
+                "speed": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "ControllerComponent": {
+                "UP": "SDL_SCANCODE_I",
+                "DOWN": "SDL_SCANCODE_K",
+                "LEFT": "SDL_SCANCODE_J",
+                "RIGHT": "SDL_SCANCODE_L",
+                "ACTION01": "SDL_SCANCODE_Z",
+                "ACTION02": "SDL_SCANCODE_B",
+                "ROTLEFT": "SDL_SCANCODE_U",
+                "ROTRIGHT": "SDL_SCANCODE_O",
+                "STEP": {
+                    "x": 100.0,
+                    "y": 3000.0,
+                    "z": 50.0
+                },
+                "SPEAK": "./Lime/res/kamehameha_goku.mp3"
+            },
+            "SpriteComponent": {
+                "sprite": "./Lime/res/goku_chibi.png",
+                "texid": 1,
+                "animated": false,
+                "duration": 0.0,
+                "rows": 1,
+                "cols": 1
+            },
+            "CameraComponent": null,
+            "RigidBody2DComponent" : {
+                "position": {
+                    "x": 250.0,
+                    "y": 500.0,
+                    "z": 0.0
+                },
+                "rotation" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "size" :{
+                    "x" : 40.0,
+                    "y" : 60.0,
+                    "z" : 0.0
+                },
+                "force" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "torque" : 0.0,
+                "velocity" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "angularVelocity" : 0.0,
+                "friction" : 0.1,
+                "mass" : 1.0,
+                "invMass" : 0.0,
+                "I" : 0.0,
+                "invI" : 0.0
+            },
+            "RenderBoxComponent" : {
+                "color" : {
+                    "x" : 0.0,
+                    "y" : 1.0,
+                    "z" : 0.0
+                }
+            }
+        },
+        {
+            "EntityID": 1,
+            "TagComponent" : {
+                "tag" : ""
+            },
+            "TransformComponent": {
+                "position": {
+                    "x": 400.0,
+                    "y": 400.0,
+                    "z": 0.0
+                },
+                "rotation" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "size" :{
+                    "x" : 30.0,
+                    "y" : 30.0,
+                    "z" : 0.0
+                }
+            },
+            "PlayerComponent": {
+                "state": "PS_IDLE",
+                "health": 100.0,
+                "score": 0.0,
+                "energy": 0.0,
+                "speed": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "ControllerComponent": null,
+            "SpriteComponent": null,
+            "CameraComponent": null,
+            "RigidBody2DComponent" : null,
+            "RenderBoxComponent":{
+                "color" : {
+                    "x" : 1.0,
+                    "y" : 1.0,
+                    "z" : 1.0
+                }
+            }
+        },
+        {
+            "EntityID": 2,
+            "TagComponent" : {
+                "tag" : "camera"
+            },
+            "TransformComponent": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 1.0
+                },
+                "rotation" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "size" :{
+                    "x" : 1,
+                    "y" : 1,
+                    "z" : 1
+                }
+            },
+            "PlayerComponent": null,
+            "ControllerComponent": {
+                "UP": "SDL_SCANCODE_T",
+                "DOWN": "SDL_SCANCODE_G",
+                "LEFT": "SDL_SCANCODE_F",
+                "RIGHT": "SDL_SCANCODE_H",
+                "ACTION01": "SDL_SCANCODE_C",
+                "ACTION02": "SDL_SCANCODE_UNKNOWN",
+                "ROTLEFT": "SDL_SCANCODE_UNKNOWN",
+                "ROTRIGHT": "SDL_SCANCODE_UNKNOWN",
+                "STEP": {
+                    "x": 0.10000000149011612,
+                    "y": 0.10000000149011612,
+                    "z": 0.10000000149011612
+                },
+                "SPEAK": ""
+            },
+            "SpriteComponent": null,
+            "CameraComponent": {
+                "lookat": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -1.0
+                },
+                "up": {
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "right": {
+                    "x": 1.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "wup": {
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "projmat": [
+                    [
+                        0.0024999999441206455,
+                        0.0,
+                        0.0,
+                        -1.0
+                    ],
+                    [
+                        0.0,
+                        -0.0024999999441206455,
+                        0.0,
+                        1.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        -1.0,
+                        -0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ],
+                "viewmat": [
+                    [
+                        1.0,
+                        -0.0,
+                        0.0,
+                        -0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        -0.0
+                    ],
+                    [
+                        -0.0,
+                        -0.0,
+                        1.0,
+                        -1.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ],
+                "zoom": 1.0,
+                "sensitivity": 1.0,
+                "xrot": 0.0,
+                "yrot": -90.0,
+                "speed": 1.0,
+                "x": 0,
+                "y": 0,
+                "width": 800,
+                "height": 800,
+                "activated": true,
+                "clearcolor": {
+                    "x": 20,
+                    "y": 175,
+                    "z": 96,
+                    "w": 255
+                }
+            },
+            "RigidBody2DComponent" : null,
+            "RenderBoxComponent" : null
+        }
+    ]
+}
