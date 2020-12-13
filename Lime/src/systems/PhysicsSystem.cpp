@@ -196,6 +196,14 @@ void PhysicsSystem::update(){
 
 	}
 
+	for (auto& a : mArbiters) {
+		if (a.second.numContacts > 0) {
+			//string tag1 = gLimeEngine.getComponent<TagComponent>(a.second.body1->id).tag;
+			//string tag2 = gLimeEngine.getComponent<TagComponent>(a.second.body2->id).tag;
+			//LM_CORE_INFO("Physics System : collision : ({},{})",tag1,tag2);
+		}
+	}
+
 
 }
 

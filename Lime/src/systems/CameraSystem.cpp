@@ -2,7 +2,6 @@
 #include "CameraSystem.hpp"
 #include "core/Lime.hpp"
 #include "components/CameraComponent.hpp"
-#include "components/ControllerComponent.hpp"
 #include "components/TransformComponent.hpp"
 #include "math/MathHelpers.hpp"
 #include "math.h"
@@ -10,7 +9,6 @@
 #include "glm/gtx/transform.hpp"
 
 extern Lime gLimeEngine;
-using cp = ControllerComponent;
 using tf = TransformComponent;
 using cm = CameraComponent;
 
@@ -19,7 +17,6 @@ using cm = CameraComponent;
 void CameraSystem::init(){
 
 	for (auto& entity : mEntities) {
-		auto& ctrl = gLimeEngine.getComponent<cp>(entity);
 		auto& txfm = gLimeEngine.getComponent<tf>(entity);
 		auto& cam = gLimeEngine.getComponent<cm>(entity);
 		orthoInitCamera(cam, (float)0, (float)cam.width, (float)0, (float)cam.height);
@@ -46,7 +43,7 @@ void CameraSystem::update(){
 		glEnable(GL_SCISSOR_TEST);
 
 		glm::vec4 color = rgba255((unsigned int)cam.clearcolor.r, (unsigned int)cam.clearcolor.g, (unsigned int)cam.clearcolor.b, (unsigned int)cam.clearcolor.a);
-		//glClearColor(color.x, color.y, color.z, color.w);
+		glClearColor(color.x, color.y, color.z, color.w);
 	}
 }
 
@@ -55,25 +52,28 @@ void CameraSystem::onEvent(Event& e){
 	if (e.getType() == EventID::E_WINDOW_KEY_PRESSED) {
 		auto button = e.getParam<SDL_Scancode>(EventID::P_WINDOW_KEY_PRESSED_KEYCODE);
 		for (auto entity : mEntities) {
-			auto& ctrl = gLimeEngine.getComponent<cp>(entity);
 			auto& txfm = gLimeEngine.getComponent<tf>(entity);
 			auto& cam = gLimeEngine.getComponent<cm>(entity);
 			bool camUpdated = false;
-			if (ctrl.UP == button) {
-				orthoCamMouseMove(cam, 0, 5.0f, true);
+			if (SDL_SCANCODE_T == button) {
+				//orthoCamMouseMove(cam, 0, ctrl.STEP.y, true);
+				txfm.position.y += cam.speed;
 				camUpdated = true;
 				// [replace with keyboard functions]
 			}
-			if (ctrl.DOWN == button) {
-				orthoCamMouseMove(cam, 0, -5.0f, true);
+			if (SDL_SCANCODE_G == button) {
+				//orthoCamMouseMove(cam, 0, -ctrl.STEP.y, true);
+				txfm.position.y += -cam.speed;
 				camUpdated = true;
 			}
-			if (ctrl.RIGHT == button) {
-				orthoCamMouseMove(cam, 5.0f, 0, true);
+			if (SDL_SCANCODE_H == button) {
+				//orthoCamMouseMove(cam, ctrl.STEP.x, 0, true);
+				txfm.position.x += cam.speed;
 				camUpdated = true;
 			}
-			if (ctrl.LEFT == button) {
-				orthoCamMouseMove(cam, -5.0f, 0, true);
+			if (SDL_SCANCODE_F == button) {
+				//orthoCamMouseMove(cam, -ctrl.STEP.x, 0, true);
+				txfm.position.x += -cam.speed;
 				camUpdated = true;
 			}
 
@@ -84,7 +84,6 @@ void CameraSystem::onEvent(Event& e){
 		auto w = (int)e.getParam<unsigned int>(EventID::P_WINDOW_RESIZED_WIDTH);
 		auto h = (int)e.getParam<unsigned int>(EventID::P_WINDOW_RESIZED_HEIGHT);
 		for (auto entity : mEntities) {
-			auto& ctrl = gLimeEngine.getComponent<cp>(entity);
 			auto& txfm = gLimeEngine.getComponent<tf>(entity);
 			auto& cam = gLimeEngine.getComponent<cm>(entity);
 			cam.width = w;

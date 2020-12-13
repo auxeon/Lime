@@ -168,7 +168,10 @@ public:
 					}
 					// from 1 -> 0
 					if ((!gridmap.cells[i][j].data && gridmap.cells[i][j - 1].data) || j + 1 == gridmap.cols) {
-						if (ej - sj > 0) {
+						//if (ej - sj > 0) {
+							if (ej == 0 && sj == 0) {
+								continue;
+							}
 
 							float xs = (float)(sj)*blocksize - blocksize / 2;
 							float xe = (float)(ej)*blocksize + blocksize / 2;
@@ -206,7 +209,7 @@ public:
 							addComponent(collider, RenderBoxComponent{
 								glm::vec3{0.0f,1.0f,0.0f}
 								});
-						}
+						//}
 					}
 				}
 			}
@@ -589,12 +592,18 @@ inline void sdlPoll() {
 			gLimeEngine.sendEvent(event);
 		}
 		// GS_MENU
+		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_0)) {
+			Event event(EventID::E_GS_LEVEL);
+			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/menu.json");
+			gLimeEngine.sendEvent(event);
+		}
+		// GS_LEVEL1
 		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_1)) {
 			Event event(EventID::E_GS_LEVEL);
 			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/level1.json");
 			gLimeEngine.sendEvent(event);
 		}
-		// GS_LEVEL
+		// GS_LEVEL2
 		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_2)) {
 			Event event(EventID::E_GS_LEVEL);
 			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/level2.json");

@@ -1,0 +1,178 @@
+{
+    "Entities": [
+        {
+            "EntityID": 0,
+            "TagComponent" : {
+                "tag" : "menu_screen"
+            },
+            "TransformComponent": {
+                "position": {
+                    "x": 400.0,
+                    "y": 400.0,
+                    "z": 0.0
+                },
+                "rotation" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "size" :{
+                    "x" : 800.0,
+                    "y" : 800.0,
+                    "z" : 0.0
+                }
+            },
+            "PlayerComponent": null,
+            "SpriteComponent": {
+                "sprite": "./Lime/res/menu01.png",
+                "texid": 1,
+                "animated": false,
+                "duration": 0.0,
+                "rows": 1,
+                "cols": 1
+            },
+            "CameraComponent" : null,
+            "RigidBody2DComponent" : null,
+            "RenderBoxComponent" : {
+                "color" : {
+                    "x" : 0.0,
+                    "y" : 1.0,
+                    "z" : 0.0
+                }
+            }
+        },
+        {
+            "EntityID": 1,
+            "TagComponent" : {
+                "tag" : "camera"
+            },
+            "TransformComponent": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 1.0
+                },
+                "rotation" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "size" :{
+                    "x" : 1,
+                    "y" : 1,
+                    "z" : 1
+                }
+            },
+            "PlayerComponent": null,
+            "ControllerComponent": {
+                "UP": "SDL_SCANCODE_T",
+                "DOWN": "SDL_SCANCODE_G",
+                "LEFT": "SDL_SCANCODE_F",
+                "RIGHT": "SDL_SCANCODE_H",
+                "ACTION01": "SDL_SCANCODE_C",
+                "ACTION02": "SDL_SCANCODE_UNKNOWN",
+                "ROTLEFT": "SDL_SCANCODE_UNKNOWN",
+                "ROTRIGHT": "SDL_SCANCODE_UNKNOWN",
+                "STEP": {
+                    "x": 0.10000000149011612,
+                    "y": 0.10000000149011612,
+                    "z": 0.10000000149011612
+                },
+                "SPEAK": ""
+            },
+            "SpriteComponent": null,
+            "CameraComponent": {
+                "lookat": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -1.0
+                },
+                "up": {
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "right": {
+                    "x": 1.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "wup": {
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "projmat": [
+                    [
+                        0.0024999999441206455,
+                        0.0,
+                        0.0,
+                        -1.0
+                    ],
+                    [
+                        0.0,
+                        -0.0024999999441206455,
+                        0.0,
+                        1.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        -1.0,
+                        -0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ],
+                "viewmat": [
+                    [
+                        1.0,
+                        -0.0,
+                        0.0,
+                        -0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        -0.0
+                    ],
+                    [
+                        -0.0,
+                        -0.0,
+                        1.0,
+                        -1.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ],
+                "zoom": 1.0,
+                "sensitivity": 1.0,
+                "xrot": 0.0,
+                "yrot": -90.0,
+                "speed": 1.0,
+                "x": 0,
+                "y": 0,
+                "width": 800,
+                "height": 800,
+                "activated": true,
+                "clearcolor": {
+                    "x": 20,
+                    "y": 175,
+                    "z": 96,
+                    "w": 255
+                }
+            },
+            "RigidBody2DComponent" : null,
+            "RenderBoxComponent" : null
+        }
+    ]
+}
