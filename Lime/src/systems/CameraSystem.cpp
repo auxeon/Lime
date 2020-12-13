@@ -11,8 +11,7 @@
 extern Lime gLimeEngine;
 using tf = TransformComponent;
 using cm = CameraComponent;
-
-
+glm::vec3 campos;
 
 void CameraSystem::init(){
 
@@ -31,6 +30,8 @@ void CameraSystem::init(){
 }
 
 void CameraSystem::update(){
+
+
 	//update for all the camera components the current 
 	for (auto& entity : mEntities) {
 
@@ -51,6 +52,14 @@ void CameraSystem::onEvent(Event& e){
 	// add the camera controller actions 
 	if (e.getType() == EventID::E_WINDOW_KEY_PRESSED) {
 		auto button = e.getParam<SDL_Scancode>(EventID::P_WINDOW_KEY_PRESSED_KEYCODE);
+
+		//auto camtx = &gLimeEngine.getComponent<TransformComponent>(0);
+		//auto tag = &gLimeEngine.getComponent<TagComponent>(0);
+
+		//if (tag->tag == "background") {
+		//	LM_CORE_INFO(tag->tag);
+		//}
+
 		for (auto entity : mEntities) {
 			auto& txfm = gLimeEngine.getComponent<tf>(entity);
 			auto& cam = gLimeEngine.getComponent<cm>(entity);
@@ -60,6 +69,7 @@ void CameraSystem::onEvent(Event& e){
 				txfm.position.y += cam.speed;
 				camUpdated = true;
 				// [replace with keyboard functions]
+				campos = txfm.position;
 			}
 			if (SDL_SCANCODE_G == button) {
 				//orthoCamMouseMove(cam, 0, -ctrl.STEP.y, true);

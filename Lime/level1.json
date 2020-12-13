@@ -6,6 +6,47 @@
         {
             "EntityID": 0,
             "TagComponent" : {
+                "tag" : "background"
+            },
+            "TransformComponent": {
+                "position": {
+                    "x": 400.0,
+                    "y": 400.0,
+                    "z": 0.0
+                },
+                "rotation" :{
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0
+                },
+                "size" :{
+                    "x" : 800.0,
+                    "y" : 800.0,
+                    "z" : 0.0
+                }
+            },
+            "PlayerComponent": null,
+            "SpriteComponent": {
+                "sprite": "./Lime/res/naruto_background.jpg",
+                "texid": 1,
+                "animated": false,
+                "duration": 0.0,
+                "rows": 1,
+                "cols": 1
+            },
+            "CameraComponent" : null,
+            "RigidBody2DComponent" : null,
+            "RenderBoxComponent" : {
+                "color" : {
+                    "x" : 0.0,
+                    "y" : 1.0,
+                    "z" : 0.0
+                }
+            }
+        },
+        {
+            "EntityID": 1,
+            "TagComponent" : {
                 "tag" : "goku"
             },
             "TransformComponent": {
@@ -104,7 +145,7 @@
             }
         },
         {
-            "EntityID": 1,
+            "EntityID": 2,
             "TagComponent" : {
                 "tag" : "camera"
             },
