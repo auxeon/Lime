@@ -113,33 +113,77 @@ public:
 
 			loadResource(gridmap, fname);
 
+			//"groundsprite" : "Lime/res/grass.png",
+			//	"watersprite" : "Lime/res/water.png",
+			//	"groundspritetag" : "sprite_ground",
+			//	"groundcollidertag" : "collider_ground",
+			//	"waterspritetag" : "sprite_water",
+			//	"watercollidertag" : "collider_water",
+
+			int AIR;
+			from_json(jm["air"], AIR);
+			int WATER;
+			from_json(jm["water"], WATER);
+			int GROUND;
+			from_json(jm["ground"],GROUND);
 			int blocksize;
 			from_json(jm["tilesize"], blocksize);
-			string wallsprite;
-			from_json(jm["walltile"], wallsprite);
-			string spritetag;
-			from_json(jm["spritetag"], spritetag);
-			string collidertag;
-			from_json(jm["collidertag"], collidertag);
+			string groundsprite;
+			from_json(jm["groundsprite"], groundsprite);
+			string watersprite;
+			from_json(jm["watersprite"], watersprite);
+			string groundspritetag;
+			from_json(jm["groundspritetag"], groundspritetag);
+			string waterspritetag;
+			from_json(jm["waterspritetag"], waterspritetag);
+			string groundcollidertag;
+			from_json(jm["groundcollidertag"], groundcollidertag);
+			string watercollidertag;
+			from_json(jm["watercollidertag"], watercollidertag);
 
 			// draw the plain cells
 			for (int i = 0; i < gridmap.rows; ++i) {
 				for (int j = 0; j < gridmap.cols; ++j) {
-					if (gridmap.cells[i][j].data == 1) {
-						EntityID wall = createEntity();
+
+					// ground 
+					if (gridmap.cells[i][j].data == GROUND) {
+						EntityID ground = createEntity();
 
 						float x = (float)j * blocksize + blocksize / 2;
 						float y = (float)(gridmap.rows - i - 1) * blocksize + blocksize / 2;
-						addComponent(wall, TagComponent{
-							spritetag
+						addComponent(ground, TagComponent{
+							groundspritetag
 							});
-						addComponent(wall, TransformComponent{
+						addComponent(ground, TransformComponent{
 							glm::vec3{x, y,1.0f}, // position 
 							glm::vec3{0.0f,0.0f,0.0f}, // rotation
 							glm::vec3{blocksize,blocksize,1.0f}, // size
 							});
-						addComponent(wall, SpriteComponent{
-							wallsprite,
+						addComponent(ground, SpriteComponent{
+							groundsprite,
+							(GLuint)0,
+							false,
+							0.0f,
+							1,
+							1
+							});
+					}
+					// water 
+					else if (gridmap.cells[i][j].data == WATER) {
+						EntityID water = createEntity();
+
+						float x = (float)j * blocksize + blocksize / 2;
+						float y = (float)(gridmap.rows - i - 1) * blocksize + blocksize / 2;
+						addComponent(water, TagComponent{
+							waterspritetag
+							});
+						addComponent(water, TransformComponent{
+							glm::vec3{x, y,1.0f}, // position 
+							glm::vec3{0.0f,0.0f,0.0f}, // rotation
+							glm::vec3{blocksize,blocksize,1.0f}, // size
+							});
+						addComponent(water, SpriteComponent{
+							watersprite,
 							(GLuint)0,
 							false,
 							0.0f,
@@ -181,6 +225,17 @@ public:
 							xm = xm + blocksize / 2;
 							ym = ym + blocksize / 2;
 
+							string collidertag;
+							// autos
+							if (gridmap.cells[i][ej].data == AIR) {
+								collidertag = "";
+							}
+							else if (gridmap.cells[i][ej].data == GROUND) {
+								collidertag = "ground_collider";
+							}
+							else if (gridmap.cells[i][ej].data == WATER) {
+								collidertag = "water_collider";
+							}
 							// more than 1 cell contiguous allocation found
 							EntityID collider = createEntity();
 							addComponent(collider, TagComponent{
@@ -226,16 +281,6 @@ public:
 			destroyEntity(entity);
 		}
 		mEntityManager->mLivingEntityCount = 0;
-		//mEventManager->clear();
-		//mComponentManager.reset();
-		//mEntityManager.reset();
-		//mEventManager.reset();
-		//mSystemManager.reset();
-		//mChrononManager.reset();
-		//mGraphicsManager.reset();
-		//mInputManager.reset();
-		//mResourceManager.reset();
-		//init();
 	}
 
 	// save
@@ -596,24 +641,28 @@ inline void sdlPoll() {
 			Event event(EventID::E_GS_LEVEL);
 			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/menu.json");
 			gLimeEngine.sendEvent(event);
+			gLimeEngine.mCurrentState = "Lime/menu.json";
 		}
 		// GS_LEVEL1
 		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_1)) {
 			Event event(EventID::E_GS_LEVEL);
 			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/level1.json");
 			gLimeEngine.sendEvent(event);
+			gLimeEngine.mCurrentState = "Lime/level1.json";
 		}
 		// GS_LEVEL2
 		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_2)) {
 			Event event(EventID::E_GS_LEVEL);
 			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/level2.json");
 			gLimeEngine.sendEvent(event);
+			gLimeEngine.mCurrentState = "Lime/level2.json";
 		}
 		// GS_END
 		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_3)) {
 			Event event(EventID::E_GS_LEVEL);
 			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/game_end.json");
 			gLimeEngine.sendEvent(event);
+			gLimeEngine.mCurrentState = "Lime/game_end.json";
 		}
 		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_ESCAPE)) {
 			Event e1(EventID::E_WINDOW_KEY_PRESSED);

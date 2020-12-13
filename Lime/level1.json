@@ -106,51 +106,6 @@
         {
             "EntityID": 1,
             "TagComponent" : {
-                "tag" : ""
-            },
-            "TransformComponent": {
-                "position": {
-                    "x": 400.0,
-                    "y": 400.0,
-                    "z": 0.0
-                },
-                "rotation" :{
-                    "x" : 0.0,
-                    "y" : 0.0,
-                    "z" : 0.0
-                },
-                "size" :{
-                    "x" : 30.0,
-                    "y" : 30.0,
-                    "z" : 0.0
-                }
-            },
-            "PlayerComponent": {
-                "state": "PS_IDLE",
-                "health": 100.0,
-                "score": 0.0,
-                "energy": 0.0,
-                "speed": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "ControllerComponent": null,
-            "SpriteComponent": null,
-            "CameraComponent": null,
-            "RigidBody2DComponent" : null,
-            "RenderBoxComponent":{
-                "color" : {
-                    "x" : 1.0,
-                    "y" : 1.0,
-                    "z" : 1.0
-                }
-            }
-        },
-        {
-            "EntityID": 2,
-            "TagComponent" : {
                 "tag" : "camera"
             },
             "TransformComponent": {
