@@ -231,10 +231,10 @@ public:
 								collidertag = "";
 							}
 							else if (gridmap.cells[i][ej].data == GROUND) {
-								collidertag = "ground_collider";
+								collidertag = groundcollidertag;
 							}
 							else if (gridmap.cells[i][ej].data == WATER) {
-								collidertag = "water_collider";
+								collidertag = watercollidertag;
 							}
 							// more than 1 cell contiguous allocation found
 							EntityID collider = createEntity();
@@ -270,6 +270,8 @@ public:
 			}
 		}
 		LM_CORE_INFO("MAP LOADED !");
+
+
 	}
 
 	void unload() {
@@ -426,7 +428,6 @@ public:
 		mGraphicsManager->update();
 		mSystemManager->update();
 		mResourceManager->update();
-
 	}
 
 	void onEvent(Event& e) {
@@ -436,6 +437,7 @@ public:
 			unload();
 			load(levelname);
 			systemInit();
+			mCurrentState = levelname;
 		}
 		mInputManager->onEvent(e);
 		mGraphicsManager->onEvent(e);

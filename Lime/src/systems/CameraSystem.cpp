@@ -3,6 +3,7 @@
 #include "core/Lime.hpp"
 #include "components/CameraComponent.hpp"
 #include "components/TransformComponent.hpp"
+#include "components/TagComponent.hpp"
 #include "math/MathHelpers.hpp"
 #include "math.h"
 #include "glm/glm.hpp"
@@ -53,38 +54,52 @@ void CameraSystem::onEvent(Event& e){
 	if (e.getType() == EventID::E_WINDOW_KEY_PRESSED) {
 		auto button = e.getParam<SDL_Scancode>(EventID::P_WINDOW_KEY_PRESSED_KEYCODE);
 
-		//auto camtx = &gLimeEngine.getComponent<TransformComponent>(0);
-		//auto tag = &gLimeEngine.getComponent<TagComponent>(0);
-
-		//if (tag->tag == "background") {
-		//	LM_CORE_INFO(tag->tag);
-		//}
-
+		TagComponent* backtag = NULL;
+		TransformComponent* backt = NULL;
+		if (gLimeEngine.hasComponent<TransformComponent>(0) && gLimeEngine.hasComponent<TagComponent>(0)) {
+			backtag = &gLimeEngine.getComponent<TagComponent>(0);
+			backt = &gLimeEngine.getComponent<TransformComponent>(0);
+		}
 		for (auto entity : mEntities) {
 			auto& txfm = gLimeEngine.getComponent<tf>(entity);
 			auto& cam = gLimeEngine.getComponent<cm>(entity);
+			auto& tag = gLimeEngine.getComponent<TagComponent>(entity);
+			
 			bool camUpdated = false;
 			if (SDL_SCANCODE_T == button) {
 				//orthoCamMouseMove(cam, 0, ctrl.STEP.y, true);
 				txfm.position.y += cam.speed;
 				camUpdated = true;
-				// [replace with keyboard functions]
-				campos = txfm.position;
+				if (backtag->tag == "background" && tag.tag == "camera") {
+					backt->position.y += -cam.speed;
+				}
 			}
 			if (SDL_SCANCODE_G == button) {
 				//orthoCamMouseMove(cam, 0, -ctrl.STEP.y, true);
 				txfm.position.y += -cam.speed;
 				camUpdated = true;
+
+				if (backtag->tag == "background" && tag.tag == "camera") {
+					backt->position.y += cam.speed;
+				}
 			}
 			if (SDL_SCANCODE_H == button) {
 				//orthoCamMouseMove(cam, ctrl.STEP.x, 0, true);
-				txfm.position.x += cam.speed;
+				txfm.position.x += -cam.speed;
 				camUpdated = true;
+
+				if (backtag->tag == "background" && tag.tag == "camera") {
+					backt->position.x += cam.speed;
+				}
 			}
 			if (SDL_SCANCODE_F == button) {
 				//orthoCamMouseMove(cam, -ctrl.STEP.x, 0, true);
-				txfm.position.x += -cam.speed;
+				txfm.position.x += cam.speed;
 				camUpdated = true;
+
+				if (backtag->tag == "background" && tag.tag == "camera") {
+					backt->position.x += -cam.speed;
+				}
 			}
 
 		}

@@ -198,9 +198,21 @@ void PhysicsSystem::update(){
 
 	for (auto& a : mArbiters) {
 		if (a.second.numContacts > 0) {
-			//string tag1 = gLimeEngine.getComponent<TagComponent>(a.second.body1->id).tag;
-			//string tag2 = gLimeEngine.getComponent<TagComponent>(a.second.body2->id).tag;
-			//LM_CORE_INFO("Physics System : collision : ({},{})",tag1,tag2);
+			if (gLimeEngine.hasComponent<TagComponent>(a.second.body1->id) && gLimeEngine.hasComponent<TagComponent>(a.second.body2->id)) {
+				string tag1 = gLimeEngine.getComponent<TagComponent>(a.second.body1->id).tag;
+				string tag2 = gLimeEngine.getComponent<TagComponent>(a.second.body2->id).tag;
+				//LM_CORE_INFO("Physics System : collision : ({},{})", tag1, tag2);
+
+				if((tag1 == "player" && tag2 == "collider_water") || (tag1 == "collider_water" && tag2 == "player")) {
+					LM_CORE_INFO("DEAD");
+					Event event(EventID::E_GS_LEVEL);
+					event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/lost.json");
+					gLimeEngine.sendEvent(event);
+					gLimeEngine.mCurrentState = "Lime/lost.json";
+				}
+
+
+			}
 		}
 	}
 
