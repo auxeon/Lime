@@ -24,7 +24,7 @@
             },
             "PlayerComponent": null,
             "SpriteComponent": {
-                "sprite": "./Lime/res/menu01.png",
+                "sprite": "./Lime/res/menu_back.jpg",
                 "texid": 1,
                 "animated": false,
                 "duration": 0.0,

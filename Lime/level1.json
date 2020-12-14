@@ -1,6 +1,6 @@
 {
     "Map":{
-        "src":"Lime/maps/map_00.json"
+        "src":"Lime/maps/map_01.json"
     },
     "Entities": [
         {
@@ -20,8 +20,8 @@
                     "z" : 0.0
                 },
                 "size" :{
-                    "x" : 800.0,
-                    "y" : 800.0,
+                    "x" : 1800.0,
+                    "y" : 850.0,
                     "z" : 0.0
                 }
             },
@@ -83,7 +83,7 @@
                 "DOWN": "SDL_SCANCODE_S",
                 "LEFT": "SDL_SCANCODE_A",
                 "RIGHT": "SDL_SCANCODE_D",
-                "ACTION01": "SDL_SCANCODE_SPACE",
+                "ACTION01": "SDL_SCANCODE_K",
                 "ACTION02": "SDL_SCANCODE_Z",
                 "ROTLEFT": "SDL_SCANCODE_Q",
                 "ROTRIGHT": "SDL_SCANCODE_E",
@@ -95,7 +95,7 @@
                 "SPEAK": "./Lime/res/kamehameha_goku.mp3"
             },
             "SpriteComponent": {
-                "sprite": "./Lime/res/goku_chibi.png",
+                "sprite": "./Lime/res/naruto_player.png",
                 "texid": 1,
                 "animated": false,
                 "duration": 0.0,
@@ -173,7 +173,7 @@
                 "DOWN": "SDL_SCANCODE_G",
                 "LEFT": "SDL_SCANCODE_F",
                 "RIGHT": "SDL_SCANCODE_H",
-                "ACTION01": "SDL_SCANCODE_C",
+                "ACTION01": "SDL_SCANCODE_UNKNOWN",
                 "ACTION02": "SDL_SCANCODE_UNKNOWN",
                 "ROTLEFT": "SDL_SCANCODE_UNKNOWN",
                 "ROTRIGHT": "SDL_SCANCODE_UNKNOWN",

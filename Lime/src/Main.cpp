@@ -81,15 +81,14 @@ int main(int argc, char** argv) {
 	gLimeEngine.printGraphicsInfo();
 
 	//// level related stuff here 
-	gLimeEngine.load("Lime/level1.json");
+	gLimeEngine.load("Lime/menu.json");
+	gLimeEngine.mCurrentState = "Lime/menu.json";
 	gLimeEngine.systemInit();
 	au.Init();
 	au.LoadSound("Lime/res/naruto_battle.mp3");
 	au.LoadSound("Lime/res/kamehameha_goku.mp3");
 	au.LoadSound("Lime/res/youredead_kakashi.mp3");
-	//au.PlaySounds("Lime/res/naruto_battle.mp3");
-
-
+	au.LoadSound("Lime/res/naruto_battle.mp3");
 
 	while (gLimeEngine.mIsRunning) {
 		sdlPoll();

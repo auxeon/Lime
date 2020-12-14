@@ -8,10 +8,12 @@
 #include "components/TransformComponent.hpp"
 #include "components/ControllerComponent.hpp"
 #include "components/CameraComponent.hpp"
+#include "components/RenderBoxComponent.hpp"
 #include "glm/gtx/transform.hpp"
 
 
 extern Lime gLimeEngine;
+EntityID phyBullet = 0;
 
 bool PhysicsSystem::accumulateImpulses = false;
 bool PhysicsSystem::warmStarting = true;
@@ -109,6 +111,8 @@ void PhysicsSystem::init(){
 		gravity = glm::vec3{ 0.0f,-150.0f,0.0f };
 		iterations = 10;
 		gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
+		gLimeEngine.addEventListener(EventID::E_BULLET_FIRED, [this](Event& e) {this->onEvent(e); });
+
 		mInit = true;
 	}
 
@@ -141,18 +145,10 @@ void PhysicsSystem::update(){
 		arb->second.PreStep(inv_dt);
 	}
 
-	for (int i = 0; i < (int)mJoints.size(); ++i){
-		mJoints[i]->PreStep(inv_dt);
-	}
-
 	// Perform iterations
 	for (int i = 0; i < iterations; ++i){
 		for (ArbIter arb = mArbiters.begin(); arb != mArbiters.end(); ++arb){
 			arb->second.ApplyImpulse();
-		}
-
-		for (int j = 0; j < (int)mJoints.size(); ++j){
-			mJoints[j]->ApplyImpulse();
 		}
 	}
 
@@ -211,8 +207,24 @@ void PhysicsSystem::update(){
 					gLimeEngine.mCurrentState = "Lime/lost.json";
 				}
 
+				if ((tag1 == "player" && tag2 == "collider_lime") || (tag1 == "collider_lime" && tag2 == "player")) {
+					LM_CORE_INFO("WON");
+					Event event(EventID::E_GS_LEVEL);
+					event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/won.json");
+					gLimeEngine.sendEvent(event);
+					gLimeEngine.mCurrentState = "Lime/won.json";
+				}
+
 
 			}
+		}
+	}
+
+	for (auto& m : mEntities) {
+		auto tc = gLimeEngine.getComponent<TagComponent>(m);
+		auto rb = gLimeEngine.getComponent<RigidBody2DComponent>(m);
+		if (tc.tag == "rasengan") {
+			LM_CORE_INFO("rasengan position  : ({},{})", rb.position.x,rb.position.y);
 		}
 	}
 
@@ -220,8 +232,82 @@ void PhysicsSystem::update(){
 }
 
 void PhysicsSystem::onEvent(Event& e){
+	bool right = false;
+
 	if (e.getType() == EventID::E_WINDOW_KEY_PRESSED) {
-		//std::cout << "physics onEvent";
+		
+	}
+
+	if (e.getType() == EventID::E_BULLET_FIRED) {
+
+		if (mEntities.find(phyBullet) != mEntities.end()) {
+			gLimeEngine.destroyEntity(phyBullet);
+		}
+
+		EntityID id = e.getParam<EntityID>(EventID::P_BULLET_FIRED_ORIGIN_ID);
+		TransformComponent* tx = &gLimeEngine.getComponent<TransformComponent>(id);
+
+		if (tx->size.x < 0) {
+			right = false;
+		}
+		else {
+			right = true;
+		}
+
+		//if (right) {
+			phyBullet = gLimeEngine.createEntity();
+			//EntityID phyBox = gLimeEngine.createEntity();
+			// upper phyBox
+			RigidBody2DComponent phyBullet_rb;
+			TransformComponent phyBullet_tf;
+			RenderBoxComponent phyBullet_render;
+			SpriteComponent phyBullet_sprite;
+			
+			phyBullet_rb.id = phyBullet;
+			set(phyBullet_rb, glm::vec3{ 20.0f,20.0f,0.0f }, 10.0f);
+			if(right){
+				phyBullet_rb.size.x = fabs(phyBullet_rb.size.x);
+				phyBullet_rb.velocity.x = 2000.0f;
+				phyBullet_rb.position.x = tx->position.x + tx->size.x;
+			}
+			else {
+				phyBullet_rb.size.x = -fabs(phyBullet_rb.size.x);
+				phyBullet_rb.velocity.x = -2000.0f;
+				phyBullet_rb.position.x = tx->position.x + tx->size.x;
+			}
+
+			phyBullet_rb.position.y = tx->position.y;
+			phyBullet_rb.rotation.x = phyBullet_rb.rotation.y = phyBullet_rb.rotation.z = 0.0f;
+
+			phyBullet_rb.angularVelocity = 0.0f;
+			phyBullet_render.color = glm::vec3{ 1.0f,1.0f,0.0f };
+			
+			phyBullet_tf.size.x = phyBullet_rb.size.x;
+			phyBullet_tf.size.y = phyBullet_rb.size.y;
+			phyBullet_tf.size.z = 0.0f;
+			phyBullet_tf.position.x = phyBullet_rb.position.x;
+			phyBullet_tf.position.y = phyBullet_rb.position.y;
+			phyBullet_tf.rotation = phyBullet_rb.rotation;
+			phyBullet_tf.position.z = 0.0f;
+			
+			gLimeEngine.addComponent<TagComponent>(phyBullet, TagComponent{
+			"rasengan"
+			});
+			gLimeEngine.addComponent<TransformComponent>(phyBullet, phyBullet_tf);
+			gLimeEngine.addComponent(phyBullet, SpriteComponent{
+				"Lime/res/grass01.png",
+				(GLuint)0,
+				false,
+				0.0f,
+				1,
+				1
+				});
+			gLimeEngine.addComponent<RigidBody2DComponent>(phyBullet, phyBullet_rb);
+			gLimeEngine.addComponent<RenderBoxComponent>(phyBullet, phyBullet_render);
+
+
+
+		//}
 	}
 }
 

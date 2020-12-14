@@ -18,6 +18,7 @@
 #include "systems/PhysicsSystem.hpp"
 #include "systems/TransformSystem.hpp"
 #include "systems/RenderSystem.hpp"
+#include "AudioManager.hpp"
 #include "ComponentManager.hpp"
 #include "EntityManager.hpp"
 #include "EventManager.hpp"
@@ -29,7 +30,7 @@
 #include "Types.hpp"
 
 extern Grid gridmap;
-
+extern AudioManager au;
 class Lime
 {
 public:
@@ -126,20 +127,28 @@ public:
 			from_json(jm["water"], WATER);
 			int GROUND;
 			from_json(jm["ground"],GROUND);
+			int LIME;
+			from_json(jm["lime"], LIME);
 			int blocksize;
 			from_json(jm["tilesize"], blocksize);
 			string groundsprite;
 			from_json(jm["groundsprite"], groundsprite);
+			string limesprite;
+			from_json(jm["limesprite"], limesprite);
 			string watersprite;
 			from_json(jm["watersprite"], watersprite);
 			string groundspritetag;
 			from_json(jm["groundspritetag"], groundspritetag);
+			string limespritetag;
+			from_json(jm["limespritetag"], limespritetag);
 			string waterspritetag;
 			from_json(jm["waterspritetag"], waterspritetag);
 			string groundcollidertag;
 			from_json(jm["groundcollidertag"], groundcollidertag);
 			string watercollidertag;
 			from_json(jm["watercollidertag"], watercollidertag);
+			string limecollidertag;
+			from_json(jm["limecollidertag"], limecollidertag);
 
 			// draw the plain cells
 			for (int i = 0; i < gridmap.rows; ++i) {
@@ -191,6 +200,30 @@ public:
 							1
 							});
 					}
+					// lime
+					else if (gridmap.cells[i][j].data == LIME) {
+						EntityID water = createEntity();
+
+						float x = (float)j * blocksize + blocksize / 2;
+						float y = (float)(gridmap.rows - i - 1) * blocksize + blocksize / 2;
+						addComponent(water, TagComponent{
+							limespritetag
+							});
+						addComponent(water, TransformComponent{
+							glm::vec3{x, y,1.0f}, // position 
+							glm::vec3{0.0f,0.0f,0.0f}, // rotation
+							glm::vec3{blocksize,blocksize,1.0f}, // size
+							});
+						addComponent(water, SpriteComponent{
+							limesprite,
+							(GLuint)0,
+							false,
+							0.0f,
+							1,
+							1
+							});
+					}
+
 				}
 			}
 
@@ -216,15 +249,6 @@ public:
 							if (ej == 0 && sj == 0) {
 								continue;
 							}
-
-							float xs = (float)(sj)*blocksize - blocksize / 2;
-							float xe = (float)(ej)*blocksize + blocksize / 2;
-							float xm = (float)(xs + xe) / 2.0f;
-							float ym = (float)(gridmap.rows - i - 1) * blocksize;
-							// center offset compensation
-							xm = xm + blocksize / 2;
-							ym = ym + blocksize / 2;
-
 							string collidertag;
 							// autos
 							if (gridmap.cells[i][ej].data == AIR) {
@@ -236,6 +260,19 @@ public:
 							else if (gridmap.cells[i][ej].data == WATER) {
 								collidertag = watercollidertag;
 							}
+							else if (gridmap.cells[i][ej].data == LIME) {
+								collidertag = limecollidertag;
+							}
+
+							float xs = (float)(sj)*blocksize - blocksize / 2;
+							float xe = (float)(ej)*blocksize + blocksize / 2;
+							float xm = (float)(xs + xe) / 2.0f;
+							float ym = (float)(gridmap.rows - i - 1) * blocksize;
+							// center offset compensation
+							xm = xm + blocksize / 2;
+							ym = ym + blocksize / 2;
+
+
 							// more than 1 cell contiguous allocation found
 							EntityID collider = createEntity();
 							addComponent(collider, TagComponent{
@@ -406,11 +443,6 @@ public:
 		if (!mInit) {
 
 			addEventListener(EventID::E_TIMED_EVENT, [this](Event& e) {this->onTimedEvent(e); });
-
-			//Event timedevent1(EventID::E_TIMED_EVENT);
-			//timedevent1.setParam<string>(EventID::P_TIMED_EVENT_DATA, "TEMPORAL MESSAGE TRIGGERED");
-			//mEventManager->sendTimedEvent(timedevent1, 2000);
-
 			addEventListener(EventID::E_GS_LEVEL, [this](Event& e) {onEvent(e); });
 			mInit = true;
 
@@ -438,6 +470,12 @@ public:
 			load(levelname);
 			systemInit();
 			mCurrentState = levelname;
+			if (levelname == "Lime/level1.json") {
+				au.PlaySounds("Lime/res/naruto_battle.mp3", Vector3{ 0,0,0 }, -3.0f);
+			}
+			if (levelname == "Lime/lost.json" || levelname == "Lime/won.json" || levelname == "Lime/menu.json") {
+				au.StopAllChannels();
+			}
 		}
 		mInputManager->onEvent(e);
 		mGraphicsManager->onEvent(e);
@@ -638,6 +676,7 @@ inline void sdlPoll() {
 			Event event(EventID::E_WINDOW_QUIT);
 			gLimeEngine.sendEvent(event);
 		}
+
 		// GS_MENU
 		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_0)) {
 			Event event(EventID::E_GS_LEVEL);
@@ -652,20 +691,20 @@ inline void sdlPoll() {
 			gLimeEngine.sendEvent(event);
 			gLimeEngine.mCurrentState = "Lime/level1.json";
 		}
-		// GS_LEVEL2
-		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_2)) {
-			Event event(EventID::E_GS_LEVEL);
-			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/level2.json");
-			gLimeEngine.sendEvent(event);
-			gLimeEngine.mCurrentState = "Lime/level2.json";
-		}
-		// GS_END
-		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_3)) {
-			Event event(EventID::E_GS_LEVEL);
-			event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/game_end.json");
-			gLimeEngine.sendEvent(event);
-			gLimeEngine.mCurrentState = "Lime/game_end.json";
-		}
+		//// GS_LEVEL2
+		//else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_2)) {
+		//	Event event(EventID::E_GS_LEVEL);
+		//	event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/level2.json");
+		//	gLimeEngine.sendEvent(event);
+		//	gLimeEngine.mCurrentState = "Lime/level2.json";
+		//}
+		//// GS_END
+		//else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_3)) {
+		//	Event event(EventID::E_GS_LEVEL);
+		//	event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/game_end.json");
+		//	gLimeEngine.sendEvent(event);
+		//	gLimeEngine.mCurrentState = "Lime/game_end.json";
+		//}
 		else if (gLimeEngine.mInputManager->isKeyPressed(SDL_SCANCODE_ESCAPE)) {
 			Event e1(EventID::E_WINDOW_KEY_PRESSED);
 			e1.setParam<SDL_Scancode>(P_WINDOW_KEY_PRESSED_KEYCODE, SDL_SCANCODE_ESCAPE);
@@ -722,11 +761,22 @@ inline void sdlPoll() {
 			gLimeEngine.sendEvent(event);
 		}
 		else if (e.type == SDL_KEYDOWN) {
-			if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+			if (e.key.keysym.scancode == SDL_SCANCODE_B) {
 				Event ebroadcast(EventID::E_BROADCAST_EVENT);
 				ebroadcast.setParam<string>(EventID::P_BROADCAST_EVENT_DATA, "To infinity and beyond !");
 				gLimeEngine.sendEvent(ebroadcast);
 			}
+			if (e.key.keysym.scancode == SDL_SCANCODE_C) {
+				Event edebug(EventID::E_GRAPHICS_DEBUG_TOGGLE);
+				gLimeEngine.sendEvent(edebug);
+			}
+			if (e.key.keysym.scancode == SDL_SCANCODE_SPACE && gLimeEngine.mCurrentState == "Lime/menu.json") {
+				Event event(EventID::E_GS_LEVEL);
+				event.setParam<string>(EventID::P_GS_LEVEL_NAME, "Lime/level1.json");
+				gLimeEngine.sendEvent(event);
+				gLimeEngine.mCurrentState = "Lime/level1.json";
+			}
+
 			Event event(EventID::E_WINDOW_KEY_PRESSED);
 			event.setParam<SDL_Scancode>(P_WINDOW_KEY_PRESSED_KEYCODE, e.key.keysym.scancode);
 			gLimeEngine.sendEvent(event);

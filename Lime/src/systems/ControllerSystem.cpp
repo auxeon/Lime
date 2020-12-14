@@ -96,8 +96,9 @@ void ControllerSystem::onEvent(Event& e){
 				}
 
 				if (controllerComponent.ACTION01 == button) {
-					Event edebug(EventID::E_GRAPHICS_DEBUG_TOGGLE);
-					gLimeEngine.sendEvent(edebug);
+					Event ebullet(EventID::E_BULLET_FIRED);
+					ebullet.setParam<EntityID>(EventID::P_BULLET_FIRED_ORIGIN_ID, entity);
+					gLimeEngine.sendEvent(ebullet);
 				}
 
 				if (controllerComponent.ACTION02 == button) {

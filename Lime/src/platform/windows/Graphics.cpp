@@ -33,7 +33,8 @@ Graphics::Graphics() {
 	mOpenGLContext = NULL;
 	mWindow = NULL;
 	mWindowSurface = NULL;
-	mFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+	//mFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+	mFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 
 	// registering event callbacks
 	gLimeEngine.addEventListener(EventID::E_WINDOW_RESIZED, [this](Event& e) {this->onEvent(e); });
