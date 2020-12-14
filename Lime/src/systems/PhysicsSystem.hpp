@@ -4,7 +4,6 @@
 #include "core/System.hpp"
 
 #include "components/RigidBody2DComponent.hpp"
-#include "physics/Joint.hpp"
 #include "physics/MathUtils.hpp"
 #include "physics/Arbiter.hpp"
 
@@ -26,12 +25,8 @@ public:
 	void set(RigidBody2DComponent& rb, glm::vec3& size, float m);
 	void addForce(EntityID entity, const glm::vec3& f);
 
-	//for the joints
-	void add(Joint* joint);
-
 	void clear();
 
-	std::vector<Joint*> mJoints;
 	std::map<ArbiterKey, Arbiter> mArbiters;
 
 	glm::vec3 gravity;

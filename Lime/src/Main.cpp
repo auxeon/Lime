@@ -1,10 +1,14 @@
-//
-//  main.cpp
-//  Lime
-//
-//  Created by Abhikalp Unakal on 11/10/2020
-//  Copyright © 2020 Abhikalp Unakal. All rights reserved.
-//
+/* Start Header -------------------------------------------------------
+Copyright (C) 2020 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+File Name: Main.cpp
+Purpose: Main
+Language: c++
+Platform: Windows
+Project: CS529_finalproject
+Author: Abhikalp Unakal, abhikalp.unakal, 60001619
+- End Header --------------------------------------------------------*/
 
 #include "Pch.hpp"
 #include "core/Lime.hpp"

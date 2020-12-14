@@ -1,3 +1,15 @@
+/* Start Header -------------------------------------------------------
+Copyright (C) 2020 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+File Name: EventManager.hpp
+Purpose: Event Management
+Language: c++
+Platform: Windows
+Project: CS529_finalproject
+Author: Abhikalp Unakal, abhikalp.unakal, 60001619
+- End Header --------------------------------------------------------*/
+
 #ifndef EVENTMANAGER_HPP
 #define EVENTMANAGER_HPP
 

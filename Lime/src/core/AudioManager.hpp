@@ -1,3 +1,15 @@
+/* Start Header -------------------------------------------------------
+Copyright (C) 2020 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+File Name: AudioManager.hpp
+Purpose: Audio Manager
+Language: c++
+Platform: Windows
+Project: CS529_finalproject
+Author: Abhikalp Unakal, abhikalp.unakal, 60001619
+- End Header --------------------------------------------------------*/
+
 #ifndef AUDIOMANAGER_HPP
 #define AUDIOMANAGER_HPP
 
@@ -318,7 +330,7 @@ inline FMOD_VECTOR AudioManager::VectorToFmod(const Vector3& vPosition) {
 
 inline int AudioManager::ErrorCheck(FMOD_RESULT result) {
 	if (result != FMOD_OK) {
-		cout << "FMOD ERROR " << result << endl;
+		//cout << "FMOD ERROR " << result << endl;
 		return 1;
 	}
 	// cout << "FMOD all good" << endl;
