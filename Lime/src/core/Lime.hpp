@@ -455,8 +455,8 @@ public:
 
 		if (!mInit) {
 
-			addEventListener(EventID::E_TIMED_EVENT, [this](Event& e) {this->onTimedEvent(e); });
-			addEventListener(EventID::E_GS_LEVEL, [this](Event& e) {onEvent(e); });
+			addEventListener(EventID::E_TIMED_EVENT, std::bind(&Lime::onTimedEvent, this, std::placeholders::_1));
+			addEventListener(EventID::E_GS_LEVEL, std::bind(&Lime::onEvent, this, std::placeholders::_1));
 			mInit = true;
 
 		}
@@ -648,6 +648,9 @@ public:
 	// event 
 	void addEventListener(EventID eventId, std::function<void(Event&)> const& listener){
 		mEventManager->addListener(eventId, listener);
+	}
+	void removeEventListener(EventID eventId, std::function<void(Event&)> const& listener) {
+		mEventManager->removeListener(eventId, listener);
 	}
 	void sendEvent(Event& event){
 		mEventManager->sendEvent(event);

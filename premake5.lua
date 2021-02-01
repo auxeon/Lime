@@ -53,7 +53,7 @@ project "Lime"
 	end
 
 	if os.host() == "windows" then
-		kind ("WindowedApp")
+		kind ("ConsoleApp")
 	
 		includedirs {
 			-- include basepath

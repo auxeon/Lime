@@ -20,7 +20,7 @@ extern Lime gLimeEngine;
 void BroadcastSystem::init(){
 
 	if (!mInit) {
-		gLimeEngine.addEventListener(EventID::E_BROADCAST_EVENT, [this](Event& e) {this->onEvent(e); });
+		gLimeEngine.addEventListener(EventID::E_BROADCAST_EVENT, std::bind(&BroadcastSystem::onEvent, this, std::placeholders::_1));
 		mInit = true;
 	}
 }

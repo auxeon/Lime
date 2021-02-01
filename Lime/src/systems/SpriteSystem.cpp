@@ -46,8 +46,8 @@ void SpriteSystem::init(){
 
     if (!mInit) {
         // do the event callback registration
-        gLimeEngine.addEventListener(EventID::E_GRAPHICS_DEBUG_TOGGLE, [this](Event& e) {this->onEvent(e); });
-        gLimeEngine.addEventListener(EventID::E_GRAPHICS_CAMERA_UPDATED, [this](Event& e) {this->onEvent(e); });
+        gLimeEngine.addEventListener(EventID::E_GRAPHICS_DEBUG_TOGGLE, std::bind(&SpriteSystem::onEvent, this, std::placeholders::_1));
+        gLimeEngine.addEventListener(EventID::E_GRAPHICS_CAMERA_UPDATED, std::bind(&SpriteSystem::onEvent, this, std::placeholders::_1));
         mInit = true;
     }
 }

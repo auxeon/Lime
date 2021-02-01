@@ -38,9 +38,8 @@ void PhysicsSystem::init(){
 	if (!mInit) {
 		gravity = glm::vec3{ 0.0f,-150.0f,0.0f };
 		iterations = 10;
-		gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
-		gLimeEngine.addEventListener(EventID::E_BULLET_FIRED, [this](Event& e) {this->onEvent(e); });
-
+		//gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, std::bind(&PhysicsSystem::onEvent, this, std::placeholders::_1));
+		gLimeEngine.addEventListener(EventID::E_BULLET_FIRED, std::bind(&PhysicsSystem::onEvent, this, std::placeholders::_1));
 		mInit = true;
 	}
 
@@ -145,9 +144,9 @@ void PhysicsSystem::update(){
 void PhysicsSystem::onEvent(Event& e){
 	bool right = false;
 
-	if (e.getType() == EventID::E_WINDOW_KEY_PRESSED) {
-		
-	}
+	//if (e.getType() == EventID::E_WINDOW_KEY_PRESSED) {
+	//	
+	//}
 
 	if (e.getType() == EventID::E_BULLET_FIRED) {
 

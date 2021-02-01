@@ -26,7 +26,7 @@ void handleEventFunc(EntityID& entity, Event& e) {
 
 void DMSystem::init(){
 	if (!mInit) {
-		gLimeEngine.addEventListener(EventID::E_DM_EVENT, [this](Event& e) {this->onEvent(e); });
+		gLimeEngine.addEventListener(EventID::E_DM_EVENT, std::bind(&DMSystem::onEvent, this, std::placeholders::_1));
 		mInit = true;
 	}
 }

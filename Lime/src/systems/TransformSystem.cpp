@@ -21,7 +21,7 @@ extern Lime gLimeEngine;
 void TransformSystem::init() {
 
 	if (!mInit) {
-		gLimeEngine.addEventListener(EventID::E_BROADCAST_EVENT, [this](Event& e) {this->onEvent(e); });
+		gLimeEngine.addEventListener(EventID::E_BROADCAST_EVENT, std::bind(&TransformSystem::onEvent, this, std::placeholders::_1));
 		mInit = true;
 	}
 }

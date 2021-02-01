@@ -24,7 +24,7 @@ using tf = TransformComponent;
 
 void ControllerSystem::init(){
 	if (!mInit) {
-		gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
+		gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, std::bind(&ControllerSystem::onEvent, this, std::placeholders::_1));
 		mInit = true;
 	}
 }
@@ -119,7 +119,6 @@ void ControllerSystem::onEvent(Event& e){
 					espeak.setParam<string>(EventID::P_DM_EVENT_DATA, controllerComponent.SPEAK);
 					gLimeEngine.sendEvent(espeak);
 				}
-
 
 			}
 		}

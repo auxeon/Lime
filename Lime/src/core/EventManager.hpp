@@ -16,12 +16,18 @@ Author: Abhikalp Unakal, abhikalp.unakal, 60001619
 #include "Pch.hpp"
 #include "core/Event.hpp"
 
+
+
 class EventManager
 {
 public:
 
-	void addListener(EventID eventId, std::function<void (Event&)> const& listener){
+	void addListener(EventID eventId, std::function<void(Event&)> const& listener){
 		listeners[eventId].push_back(listener);
+	}
+
+	void removeListener(EventID eventId, std::function<void(Event&)> const& listener) {
+		listeners[eventId].remove(listener);
 	}
 
 	void sendEvent(Event& event){
@@ -72,16 +78,27 @@ public:
 		}
 	}
 
+	// overloading equals operator 
+	friend bool operator==(const std::function<void(Event&)>& a, const std::function<void(Event&)>& b) {
+		return a.target<void(Event&)>() == b.target<void(Event&)>();
+	}
+
+	// overloading less than operator 
+	friend bool operator<(const std::function<void(Event&)>& a, const std::function<void(Event&)>& b) {
+		return a.target<void(Event&)>() < b.target<void(Event&)>();
+	}
+
 private:
-	std::unordered_map<EventID, std::list<std::function<void(Event&)>>> listeners;
-	struct Comp {
-		bool operator()(Event& e1, Event& e2) {
+	std::unordered_map < EventID, std::list < std::function<void(Event&)>>> listeners;
+
+	struct Comp2 {
+		bool operator()(Event& e1, Event& e2) const {
 			auto e1_futuretime = e1.getParam<std::chrono::steady_clock::time_point>(EventID::P_TIMED_EVENT_TIME_EXEC);
 			auto e2_futuretime = e2.getParam<std::chrono::steady_clock::time_point>(EventID::P_TIMED_EVENT_TIME_EXEC);
 			return e1_futuretime > e2_futuretime;
 		}
 	};
-	std::priority_queue<Event, std::vector<Event>, Comp> timequeue;
+	std::priority_queue<Event, std::vector<Event>, Comp2> timequeue;
 };
 
 #endif

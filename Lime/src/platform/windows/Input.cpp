@@ -22,12 +22,12 @@ void Input::init() {
 	}
 
 	// register callbacks
-	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
-	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_RELEASED, [this](Event& e) {this->onEvent(e); });
-	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_TRIGGERED, [this](Event& e) {this->onEvent(e); });
-	gLimeEngine.addEventListener(EventID::E_WINDOW_MOUSE_DOWN, [this](Event& e) {this->onEvent(e); });
-	gLimeEngine.addEventListener(EventID::E_WINDOW_MOUSE_UP, [this](Event& e) {this->onEvent(e); });
-	gLimeEngine.addEventListener(EventID::E_WINDOW_MOUSE_MOVE, [this](Event& e) {this->onEvent(e); });
+	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, std::bind(&Input::onEvent, this, std::placeholders::_1));
+	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_RELEASED, std::bind(&Input::onEvent, this, std::placeholders::_1));
+	gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_TRIGGERED, std::bind(&Input::onEvent, this, std::placeholders::_1));
+	gLimeEngine.addEventListener(EventID::E_WINDOW_MOUSE_DOWN, std::bind(&Input::onEvent, this, std::placeholders::_1));
+	gLimeEngine.addEventListener(EventID::E_WINDOW_MOUSE_UP, std::bind(&Input::onEvent, this, std::placeholders::_1));
+	gLimeEngine.addEventListener(EventID::E_WINDOW_MOUSE_MOVE, std::bind(&Input::onEvent, this, std::placeholders::_1));
 }
 void Input::update() {
 	// keyboard stuff

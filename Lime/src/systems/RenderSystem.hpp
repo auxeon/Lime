@@ -5,7 +5,6 @@
 #include "utils/Shader.hpp"
 
 
-
 class RenderSystem : public System {
 public:
 	void init() override;
@@ -25,6 +24,8 @@ public:
 	Shader mShader;
 	unsigned int mVAO;
     bool mDebugDraw = false;
+
+    // allocated on stack 
 
 };
 

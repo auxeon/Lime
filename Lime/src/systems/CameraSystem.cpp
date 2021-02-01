@@ -35,9 +35,9 @@ void CameraSystem::init(){
 	}
 	if (!mInit) {
 		// register the call backs 
-		gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
-		gLimeEngine.addEventListener(EventID::E_WINDOW_MOUSE_MOVE, [this](Event& e) {this->onEvent(e); });
-		gLimeEngine.addEventListener(EventID::E_WINDOW_RESIZED, [this](Event& e) {this->onEvent(e); });
+		gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, std::bind(&CameraSystem::onEvent, this, std::placeholders::_1));
+		gLimeEngine.addEventListener(EventID::E_WINDOW_MOUSE_MOVE, std::bind(&CameraSystem::onEvent, this, std::placeholders::_1));
+		gLimeEngine.addEventListener(EventID::E_WINDOW_RESIZED, std::bind(&CameraSystem::onEvent, this, std::placeholders::_1));
 		mInit = true;
 	}
 }

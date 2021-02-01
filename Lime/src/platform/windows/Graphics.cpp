@@ -37,8 +37,8 @@ Graphics::Graphics() {
 	mFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 
 	// registering event callbacks
-	gLimeEngine.addEventListener(EventID::E_WINDOW_RESIZED, [this](Event& e) {this->onEvent(e); });
-	gLimeEngine.addEventListener(EventID::E_WINDOW_QUIT, [this](Event& e) {this->onEvent(e); });
+	gLimeEngine.addEventListener(EventID::E_WINDOW_RESIZED, std::bind(&Graphics::onEvent,this, std::placeholders::_1));
+	gLimeEngine.addEventListener(EventID::E_WINDOW_QUIT, std::bind(&Graphics::onEvent,this, std::placeholders::_1));
 }
 void Graphics::init() {
 	// initialize sdl with the video subsystem initialization flags

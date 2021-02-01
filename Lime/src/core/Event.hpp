@@ -28,7 +28,7 @@ public:
 	}
 
 	template<typename T>
-	T getParam(EventID id){
+	T getParam(EventID id) {
 		return std::any_cast<T>(mData[id]);
 	}
 

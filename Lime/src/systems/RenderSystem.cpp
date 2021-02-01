@@ -27,7 +27,7 @@ void RenderSystem::init(){
 	gLimeEngine.mGraphicsManager->gfx.initRenderData(mShader, vertices, sizeof(vertices), mVAO, true);
 
     if (!mInit) {
-        gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, [this](Event& e) {this->onEvent(e); });
+        gLimeEngine.addEventListener(EventID::E_WINDOW_KEY_PRESSED, std::bind(&RenderSystem::onEvent, this, std::placeholders::_1));
         mInit = true;
     }
 }
@@ -65,3 +65,37 @@ void RenderSystem::onEvent(Event& e){
         }
     }
 }
+
+
+/*
+
+componentColor [1,2,5,6]
+componentSound [0,5,5,5]
+
+enti{
+tra
+phys
+}
+
+redn
+audio
+}
+phy [1,4,0]
+
+gof{
+    all entities {
+        update(){
+            c1
+                
+            c2
+                
+            ....
+
+        }
+
+    }
+}
+
+
+
+*/
